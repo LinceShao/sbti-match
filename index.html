@@ -4,82 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>SBTI 灵魂配对 · 你们有多合拍？</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-/* ============ RESET & BASE ============ */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0a0a1a;
-  --card:#12122a;
-  --card2:#1a1a3a;
-  --accent:#7c5cff;
-  --accent2:#ff6b9d;
-  --accent3:#00d4aa;
-  --text:#e8e8f0;
-  --text2:#9898b8;
-  --gold:#ffd700;
-  --radius:16px;
-}
+:root{--bg:#0a0a1a;--card:#12122a;--card2:#1a1a3a;--accent:#7c5cff;--accent2:#ff6b9d;--accent3:#00d4aa;--text:#e8e8f0;--text2:#9898b8;--gold:#ffd700;--radius:16px}
 html{font-size:16px;-webkit-tap-highlight-color:transparent}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Hiragino Sans GB",sans-serif;
-  background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;
-  background-image:radial-gradient(ellipse at 20% 50%,rgba(124,92,255,.08) 0%,transparent 50%),
-                   radial-gradient(ellipse at 80% 20%,rgba(255,107,157,.06) 0%,transparent 50%);
-}
-
-/* ============ ANIMATIONS ============ */
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Hiragino Sans GB",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;background-image:radial-gradient(ellipse at 20% 50%,rgba(124,92,255,.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(255,107,157,.06) 0%,transparent 50%)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.3)}28%{transform:scale(1)}42%{transform:scale(1.2)}56%{transform:scale(1)}}
-@keyframes sparkle{0%,100%{opacity:0;transform:scale(0) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(180deg)}}
-@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes barGrow{from{width:0}to{width:var(--bar-w)}}
 @keyframes countUp{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-@keyframes ringDraw{to{stroke-dashoffset:var(--ring-end)}}
-@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,92,255,.3)}50%{box-shadow:0 0 40px rgba(124,92,255,.6)}}
-
-/* ============ LAYOUT ============ */
 .container{max-width:420px;margin:0 auto;padding:20px 16px 40px;min-height:100vh}
-
-/* ============ PAGE: INTRO ============ */
-.page{display:none;animation:fadeUp .6s ease}
-.page.active{display:block}
-
+.page{display:none;animation:fadeUp .6s ease}.page.active{display:block}
 .intro-header{text-align:center;padding:40px 0 30px}
 .intro-header .logo{font-size:48px;margin-bottom:12px;animation:float 3s ease-in-out infinite}
-.intro-header h1{
-  font-size:28px;font-weight:800;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  letter-spacing:1px;
-}
+.intro-header h1{font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .intro-header .subtitle{color:var(--text2);font-size:14px;margin-top:8px;line-height:1.6}
-.intro-header .badge{
-  display:inline-block;margin-top:12px;padding:4px 12px;
-  background:rgba(124,92,255,.15);border:1px solid rgba(124,92,255,.3);
-  border-radius:20px;font-size:12px;color:var(--accent);
-}
-
-/* ============ SELECT PANEL ============ */
-.select-panel{
-  background:var(--card);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;
-  border:1px solid rgba(255,255,255,.06);
-}
-.select-panel .label{
-  font-size:13px;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:6px;
-}
+.intro-header .badge{display:inline-block;margin-top:12px;padding:4px 12px;background:rgba(124,92,255,.15);border:1px solid rgba(124,92,255,.3);border-radius:20px;font-size:12px;color:var(--accent)}
+.select-panel{background:var(--card);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;border:1px solid rgba(255,255,255,.06)}
+.select-panel .label{font-size:13px;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .select-panel .label .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dot-a{background:var(--accent)}
-.dot-b{background:var(--accent2)}
-
+.dot-a{background:var(--accent)}.dot-b{background:var(--accent2)}
 .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.type-btn{
-  padding:10px 4px;border-radius:12px;border:1.5px solid rgba(255,255,255,.08);
-  background:var(--card2);cursor:pointer;transition:all .25s;text-align:center;
-  font-size:12px;color:var(--text2);position:relative;overflow:hidden;
-}
+.type-btn{padding:10px 4px;border-radius:12px;border:1.5px solid rgba(255,255,255,.08);background:var(--card2);cursor:pointer;transition:all .25s;text-align:center;font-size:12px;color:var(--text2);position:relative;overflow:hidden}
 .type-btn:active{transform:scale(.95)}
 .type-btn .emoji{font-size:20px;display:block;margin-bottom:4px}
 .type-btn .code{font-weight:700;font-size:11px;color:var(--text);letter-spacing:.5px}
@@ -87,814 +36,519 @@ body{
 .type-btn.selected-a{border-color:var(--accent);background:rgba(124,92,255,.12);color:var(--accent)}
 .type-btn.selected-b{border-color:var(--accent2);background:rgba(255,107,157,.12);color:var(--accent2)}
 .type-btn.selected-a .code,.type-btn.selected-b .code{color:inherit}
-.type-btn .rarity{
-  position:absolute;top:3px;right:3px;font-size:8px;padding:1px 4px;
-  border-radius:4px;font-weight:700;
-}
+.type-btn .rarity{position:absolute;top:3px;right:3px;font-size:8px;padding:1px 4px;border-radius:4px;font-weight:700}
 .rarity-C{background:rgba(0,212,170,.2);color:var(--accent3)}
 .rarity-N{background:rgba(100,149,237,.2);color:cornflowerblue}
 .rarity-R{background:rgba(178,102,255,.2);color:#b266ff}
 .rarity-SR{background:rgba(255,165,0,.2);color:orange}
 .rarity-SSR{background:rgba(255,215,0,.2);color:var(--gold)}
-
-/* ============ MATCH BUTTON ============ */
-.match-btn{
-  width:100%;padding:16px;border:none;border-radius:var(--radius);cursor:pointer;
-  font-size:18px;font-weight:700;color:#fff;margin-top:20px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  box-shadow:0 4px 24px rgba(124,92,255,.3);transition:all .3s;
-  letter-spacing:2px;position:relative;overflow:hidden;
-}
+.match-btn{width:100%;padding:16px;border:none;border-radius:var(--radius);cursor:pointer;font-size:18px;font-weight:700;color:#fff;margin-top:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 4px 24px rgba(124,92,255,.3);transition:all .3s;letter-spacing:2px;position:relative;overflow:hidden}
 .match-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
 .match-btn:not(:disabled):active{transform:scale(.97)}
-.match-btn::after{
-  content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
-  animation:shimmer 3s infinite;
-}
-
-/* ============ VS DISPLAY ============ */
-.vs-display{
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  padding:20px;margin:16px 0;
-}
-.vs-avatar{
-  width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:28px;border:2px solid;
-}
+.match-btn::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 3s infinite}
+.vs-display{display:flex;align-items:center;justify-content:center;gap:12px;padding:20px;margin:16px 0}
+.vs-avatar{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;border:2px solid}
 .vs-avatar-a{border-color:var(--accent);background:rgba(124,92,255,.1)}
 .vs-avatar-b{border-color:var(--accent2);background:rgba(255,107,157,.1)}
 .vs-heart{font-size:32px;animation:heartbeat 1.5s ease-in-out infinite}
-.vs-info{text-align:center}
-.vs-info .code{font-size:12px;font-weight:700;margin-top:4px}
-
-/* ============ RESULT PAGE ============ */
+.vs-info{text-align:center}.vs-info .code{font-size:12px;font-weight:700;margin-top:4px}
 #resultPage{padding-bottom:80px}
 .result-header{text-align:center;padding:30px 0 20px}
-.score-ring{
-  width:160px;height:160px;margin:0 auto 16px;position:relative;
-}
+.score-ring{width:160px;height:160px;margin:0 auto 16px;position:relative}
 .score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .score-ring circle{fill:none;stroke-width:8}
 .score-ring .bg{stroke:rgba(255,255,255,.06)}
-.score-ring .fg{
-  stroke:url(#scoreGrad);stroke-linecap:round;
-  stroke-dasharray:440;stroke-dashoffset:440;
-  animation:ringDraw 1.5s ease forwards .3s;
-}
-.score-ring .score-text{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  text-align:center;
-}
-.score-ring .score-num{
-  font-size:48px;font-weight:800;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:countUp .8s ease .5s both;
-}
+.score-ring .fg{stroke:url(#scoreGrad);stroke-linecap:round}
+.score-ring .score-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.score-ring .score-num{font-size:48px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:countUp .8s ease .5s both}
 .score-ring .score-unit{font-size:14px;color:var(--text2)}
-
-.match-verdict{
-  font-size:20px;font-weight:700;text-align:center;margin-bottom:6px;
-}
+.match-verdict{font-size:20px;font-weight:700;text-align:center;margin-bottom:6px}
 .match-tagline{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px}
-
-/* ============ ANALYSIS CARDS ============ */
-.analysis-card{
-  background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:14px;
-  border:1px solid rgba(255,255,255,.06);animation:fadeUp .5s ease both;
-}
-.analysis-card:nth-child(2){animation-delay:.1s}
-.analysis-card:nth-child(3){animation-delay:.2s}
-.analysis-card:nth-child(4){animation-delay:.3s}
-.analysis-card:nth-child(5){animation-delay:.4s}
-
-.card-title{
-  font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;
-}
+.analysis-card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:14px;border:1px solid rgba(255,255,255,.06);animation:fadeUp .5s ease both}
+.card-title{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .card-title .icon{font-size:18px}
-
-/* dimension bars */
-.dim-row{margin-bottom:12px;animation:slideIn .4s ease both}
-.dim-row:nth-child(2){animation-delay:.05s}
-.dim-row:nth-child(3){animation-delay:.1s}
-.dim-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;color:var(--text2)}
-.dim-bar-wrap{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;position:relative}
-.dim-bar{
-  height:100%;border-radius:3px;animation:barGrow .8s ease both;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-}
-.dim-bar.low{background:linear-gradient(90deg,#ff4757,#ff6b81)}
-.dim-bar.mid{background:linear-gradient(90deg,#ffa502,#ffda79)}
-.dim-bar.high{background:linear-gradient(90deg,var(--accent3),#7bed9f)}
-
-/* bullet list */
-.bullet-list{list-style:none}
-.bullet-list li{
-  padding:8px 0;font-size:13px;line-height:1.6;color:var(--text);
-  border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:8px;
-}
-.bullet-list li:last-child{border:none}
-.bullet-list .bi{flex-shrink:0;font-size:15px}
-
-/* tags */
 .tag-row{display:flex;flex-wrap:wrap;gap:8px}
-.tag{
-  padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;
-  background:rgba(124,92,255,.1);color:var(--accent);border:1px solid rgba(124,92,255,.2);
-}
+.tag{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(124,92,255,.1);color:var(--accent);border:1px solid rgba(124,92,255,.2)}
 .tag.warm{background:rgba(255,107,157,.1);color:var(--accent2);border-color:rgba(255,107,157,.2)}
 .tag.green{background:rgba(0,212,170,.1);color:var(--accent3);border-color:rgba(0,212,170,.2)}
 .tag.gold{background:rgba(255,215,0,.1);color:var(--gold);border-color:rgba(255,215,0,.2)}
-
-/* ============ TIP SECTION ============ */
-.tip-box{
-  background:linear-gradient(135deg,rgba(124,92,255,.08),rgba(255,107,157,.08));
-  border:1px solid rgba(124,92,255,.15);border-radius:var(--radius);padding:16px;
-  margin-bottom:14px;
-}
+.rel-overview{background:linear-gradient(135deg,rgba(124,92,255,.1),rgba(255,107,157,.1));border:1px solid rgba(124,92,255,.15);border-radius:var(--radius);padding:20px;margin-bottom:14px;text-align:center}
+.rel-overview .rel-type{font-size:18px;font-weight:800;margin-bottom:10px;letter-spacing:1px}
+.rel-overview .rel-desc{font-size:13px;line-height:1.8;color:var(--text2);text-align:left}
+.scene-item{background:var(--card2);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,.04)}
+.scene-item .scene-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:14px;font-weight:700;flex-wrap:wrap}
+.scene-item .scene-head .si{font-size:20px}
+.scene-item .scene-body{font-size:12px;line-height:1.8;color:var(--text2)}
+.scene-score{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;margin-left:auto}
+.ss-high{background:rgba(0,212,170,.15);color:var(--accent3)}
+.ss-mid{background:rgba(255,165,0,.15);color:orange}
+.ss-low{background:rgba(255,71,87,.15);color:#ff6b81}
+.dim-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 8px;scrollbar-width:none}
+.dim-scroll-wrap::-webkit-scrollbar{display:none}
+.dim-scroll{display:flex;gap:14px;padding:0 4px;width:max-content}
+.mini-ring{text-align:center;flex-shrink:0;width:54px}
+.mini-ring-wrap{position:relative;display:inline-block;width:48px;height:48px}
+.mini-ring svg{width:48px;height:48px;display:block}
+.mini-ring .mr-val{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:700}
+.mini-ring .mr-label{font-size:9px;color:var(--text2);margin-top:4px;line-height:1.2;display:block;white-space:nowrap}
+.scroll-hint{font-size:10px;color:var(--text2);text-align:right;margin-top:4px;opacity:.5}
+.bullet-list{list-style:none}
+.bullet-list li{padding:8px 0;font-size:13px;line-height:1.7;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:8px}
+.bullet-list li:last-child{border:none}
+.bullet-list .bi{flex-shrink:0;font-size:15px}
+.tip-box{background:linear-gradient(135deg,rgba(124,92,255,.08),rgba(255,107,157,.08));border:1px solid rgba(124,92,255,.15);border-radius:var(--radius);padding:16px;margin-bottom:14px}
 .tip-box .tip-title{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .tip-box p{font-size:12px;line-height:1.7;color:var(--text2)}
-
-/* ============ ACTION BUTTONS ============ */
 .action-row{display:flex;gap:10px;margin-top:20px}
-.action-btn{
-  flex:1;padding:14px;border:none;border-radius:var(--radius);cursor:pointer;
-  font-size:14px;font-weight:700;transition:all .2s;
-}
+.action-btn{flex:1;padding:14px;border:none;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:700;transition:all .2s}
 .action-btn:active{transform:scale(.96)}
-.btn-primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
-  box-shadow:0 4px 16px rgba(124,92,255,.25);
-}
-.btn-secondary{
-  background:var(--card2);color:var(--text);
-  border:1px solid rgba(255,255,255,.1);
-}
-
-/* ============ FOOTER ============ */
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 16px rgba(124,92,255,.25)}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid rgba(255,255,255,.1)}
 .footer{text-align:center;padding:20px 0;font-size:11px;color:var(--text2);opacity:.6}
-.footer a{color:var(--accent);text-decoration:none}
-
-/* ============ SHARE CARD (hidden, for screenshot) ============ */
-.share-overlay{
-  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,.75);z-index:1000;justify-content:center;align-items:center;
-  padding:20px;
-}
+.share-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:1000;justify-content:center;align-items:center;padding:20px;flex-direction:column;overflow-y:auto}
 .share-overlay.show{display:flex}
-.share-card{
-  width:100%;max-width:360px;background:linear-gradient(160deg,#12122a 0%,#1e1040 50%,#0a0a1a 100%);
-  border-radius:24px;padding:32px 24px;position:relative;overflow:hidden;
-  border:1px solid rgba(124,92,255,.2);
-}
-.share-card::before{
-  content:"";position:absolute;top:-50%;right:-50%;width:100%;height:100%;
-  background:radial-gradient(circle,rgba(124,92,255,.15) 0%,transparent 70%);
-  pointer-events:none;
-}
-.share-card-header{text-align:center;margin-bottom:20px;position:relative;z-index:1}
-.share-card-header .brand{font-size:11px;color:var(--text2);letter-spacing:2px;margin-bottom:12px}
-.share-card-vs{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px;position:relative;z-index:1}
-.share-avatar{
-  width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:24px;border:2px solid;
-}
-.share-score-big{
-  font-size:56px;font-weight:800;text-align:center;
-  background:linear-gradient(135deg,var(--accent),var(--accent2),var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  position:relative;z-index:1;
-}
-.share-verdict{font-size:16px;font-weight:700;text-align:center;margin:8px 0;position:relative;z-index:1}
-.share-dims{position:relative;z-index:1;margin:16px 0}
-.share-dim{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
-.share-dim .sdl{width:60px;color:var(--text2);text-align:right;flex-shrink:0}
-.share-dim .sdb{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
-.share-dim .sdb-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.share-dim .sdv{width:30px;font-weight:700;font-size:11px}
-.share-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0;position:relative;z-index:1}
-.share-tag{padding:3px 10px;border-radius:12px;font-size:10px;background:rgba(124,92,255,.15);color:var(--accent)}
-.share-footer{text-align:center;font-size:10px;color:var(--text2);margin-top:16px;position:relative;z-index:1}
-.share-footer .qr-hint{margin-top:6px;font-size:9px;opacity:.5}
-.close-share{
-  position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;cursor:pointer;z-index:10;
-}
-.share-tip{text-align:center;color:var(--text2);font-size:12px;margin-top:16px}
+.share-inner{width:100%;max-width:380px;text-align:center}
+.share-image-wrap img{width:100%;border-radius:16px;border:1px solid rgba(255,255,255,.1)}
+.share-actions{display:flex;gap:10px;margin-top:16px;justify-content:center}
+.share-actions button{padding:12px 24px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer}
+.share-actions button:active{transform:scale(.96)}
+.share-save-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.share-close-btn{background:var(--card2);color:var(--text);border:1px solid rgba(255,255,255,.1)}
+.share-generating{color:var(--text2);font-size:14px;padding:30px;text-align:center}
+.share-tip{font-size:11px;color:var(--text2);margin-top:12px;opacity:.7}
+/* hidden card for rendering */
+.render-card{position:fixed;left:-9999px;top:0;z-index:-1}
+.sc{width:360px;background:linear-gradient(160deg,#12122a 0%,#1e1040 50%,#0a0a1a 100%);border-radius:24px;padding:24px 18px;overflow:hidden;border:1px solid rgba(124,92,255,.2);position:relative}
+.sc::before{content:"";position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(124,92,255,.15) 0%,transparent 70%);pointer-events:none}
+.sc *{position:relative;z-index:1}
+.sc-brand{text-align:center;font-size:10px;color:#9898b8;letter-spacing:2px;margin-bottom:10px}
+.sc-vs{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+.sc-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid}
+.sc-av-a{border-color:#7c5cff;background:rgba(124,92,255,.1)}
+.sc-av-b{border-color:#ff6b9d;background:rgba(255,107,157,.1)}
+.sc-names{text-align:center;font-size:11px;color:#9898b8;margin-bottom:4px}
+.sc-score{font-size:48px;font-weight:800;text-align:center;background:linear-gradient(135deg,#7c5cff,#ff6b9d,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.sc-verdict{font-size:13px;font-weight:700;text-align:center;margin:4px 0}
+.sc-tags{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:8px 0}
+.sc-tag{padding:2px 8px;border-radius:10px;font-size:9px;background:rgba(124,92,255,.15);color:#7c5cff}
+.sc-section{margin:10px 0 0;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:12px;border:1px solid rgba(255,255,255,.06)}
+.sc-section-title{font-size:10px;font-weight:700;color:#e8e8f0;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.sc-rel-type{font-size:12px;font-weight:800;text-align:center;margin-bottom:4px;letter-spacing:.5px}
+.sc-rel-desc{font-size:9px;color:#9898b8;line-height:1.6;text-align:left}
+.sc-scene{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:9px;color:#e8e8f0}
+.sc-scene:last-child{margin-bottom:0}
+.sc-scene .sc-si{font-size:14px;flex-shrink:0}
+.sc-scene .sc-sn{flex:1}
+.sc-scene .sc-ss{padding:1px 6px;border-radius:8px;font-size:8px;font-weight:700;flex-shrink:0}
+.sc-ss-h{background:rgba(0,212,170,.15);color:#00d4aa}
+.sc-ss-m{background:rgba(255,165,0,.15);color:orange}
+.sc-ss-l{background:rgba(255,71,87,.15);color:#ff6b81}
+.sc-bullet{font-size:9px;color:#c8c8d8;line-height:1.6;margin-bottom:3px;display:flex;gap:4px}
+.sc-bullet:last-child{margin-bottom:0}
+.sc-bullet .sc-bi{flex-shrink:0}
+.sc-advice{font-size:9px;color:#9898b8;line-height:1.5;margin-bottom:3px}
+.sc-advice:last-child{margin-bottom:0}
+.sc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06)}
+.sc-bottom-left{flex:1}
+.sc-bottom-left .sc-cta{font-size:11px;font-weight:700;color:#e8e8f0;margin-bottom:3px}
+.sc-bottom-left .sc-url{font-size:8px;color:#7c5cff;word-break:break-all}
+.sc-bottom-left .sc-slogan{font-size:8px;color:#9898b8;margin-top:3px}
+.sc-qr{width:70px;height:70px;flex-shrink:0;border-radius:8px;overflow:hidden;background:#fff;padding:4px}
+.sc-qr canvas,.sc-qr img{width:100%!important;height:100%!important}
 </style>
 </head>
 <body>
-
 <div class="container">
-  <!-- ===== PAGE 1: INTRO & SELECT ===== -->
   <div id="introPage" class="page active">
     <div class="intro-header">
       <div class="logo">🔮</div>
       <h1>SBTI 灵魂配对</h1>
-      <div class="subtitle">选择两个 SBTI 人格类型<br>看看你们的灵魂有多合拍</div>
-      <div class="badge">✨ 27种人格 · 15维分析 · 超详细报告</div>
+      <div class="subtitle">选两个人格，看看你们是命中注定<br>还是冤家路窄（或者纯纯离谱）</div>
+      <div class="badge">✨ 27种人格 · 15维深扒 · 一本正经地胡说八道</div>
     </div>
-
-    <!-- Person A -->
     <div class="select-panel">
-      <div class="label"><span class="dot dot-a"></span> 选择你的人格</div>
+      <div class="label"><span class="dot dot-a"></span> 你是哪种生物？</div>
       <div class="type-grid" id="gridA"></div>
     </div>
-
-    <!-- Person B -->
     <div class="select-panel">
-      <div class="label"><span class="dot dot-b"></span> 选择 TA 的人格</div>
+      <div class="label"><span class="dot dot-b"></span> TA 又是什么物种？</div>
       <div class="type-grid" id="gridB"></div>
     </div>
-
-    <!-- VS Preview -->
     <div class="vs-display" id="vsDisplay" style="display:none">
-      <div>
-        <div class="vs-avatar vs-avatar-a" id="vsEmojiA"></div>
-        <div class="vs-info"><span class="code" id="vsCodeA"></span></div>
-      </div>
+      <div><div class="vs-avatar vs-avatar-a" id="vsEmojiA"></div><div class="vs-info"><span class="code" id="vsCodeA"></span></div></div>
       <div class="vs-heart">💕</div>
-      <div>
-        <div class="vs-avatar vs-avatar-b" id="vsEmojiB"></div>
-        <div class="vs-info"><span class="code" id="vsCodeB"></span></div>
-      </div>
+      <div><div class="vs-avatar vs-avatar-b" id="vsEmojiB"></div><div class="vs-info"><span class="code" id="vsCodeB"></span></div></div>
     </div>
-
-    <button class="match-btn" id="matchBtn" disabled onclick="doMatch()">
-      🔮 开始灵魂配对
-    </button>
-
-    <div class="footer">
-      纯属娱乐 · 请勿当真 · SBTI 配对分析<br>
-      <span style="font-size:10px">made with 💜 by a PM who needs a side gig</span>
-    </div>
+    <button class="match-btn" id="matchBtn" disabled onclick="doMatch()">🔮 开始灵魂配对</button>
+    <div class="footer">纯属娱乐 · 认真你就输了<br><span style="font-size:10px">made with 💜 by a PM who needs a side gig</span></div>
   </div>
 
-  <!-- ===== PAGE 2: RESULT ===== -->
   <div id="resultPage" class="page">
     <div class="result-header">
       <div class="vs-display" id="resultVs">
-        <div>
-          <div class="vs-avatar vs-avatar-a" id="rEmojiA"></div>
-          <div class="vs-info"><span class="code" id="rCodeA"></span></div>
-        </div>
+        <div><div class="vs-avatar vs-avatar-a" id="rEmojiA"></div><div class="vs-info"><span class="code" id="rCodeA"></span></div></div>
         <div class="vs-heart">💕</div>
-        <div>
-          <div class="vs-avatar vs-avatar-b" id="rEmojiB"></div>
-          <div class="vs-info"><span class="code" id="rCodeB"></span></div>
-        </div>
+        <div><div class="vs-avatar vs-avatar-b" id="rEmojiB"></div><div class="vs-info"><span class="code" id="rCodeB"></span></div></div>
       </div>
-
       <div class="score-ring">
         <svg viewBox="0 0 160 160">
-          <defs>
-            <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="var(--accent)"/>
-              <stop offset="100%" stop-color="var(--accent2)"/>
-            </linearGradient>
-          </defs>
+          <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7c5cff"/><stop offset="100%" stop-color="#ff6b9d"/></linearGradient></defs>
           <circle class="bg" cx="80" cy="80" r="70"/>
           <circle class="fg" id="scoreCircle" cx="80" cy="80" r="70"/>
         </svg>
-        <div class="score-text">
-          <div class="score-num" id="scoreNum">0</div>
-          <div class="score-unit">匹配度</div>
-        </div>
+        <div class="score-text"><div class="score-num" id="scoreNum">0</div><div class="score-unit">匹配度</div></div>
       </div>
-
       <div class="match-verdict" id="verdict"></div>
       <div class="match-tagline" id="tagline"></div>
     </div>
-
     <div id="analysisCards"></div>
-
     <div class="action-row">
       <button class="action-btn btn-secondary" onclick="goBack()">🔄 再测一对</button>
-      <button class="action-btn btn-primary" onclick="showShare()">📸 分享卡片</button>
+      <button class="action-btn btn-primary" onclick="showShare()">📸 保存分享卡片</button>
     </div>
-
-    <div class="footer" style="margin-top:24px">
-      纯属娱乐 · 请勿当真<br>
-      <span style="font-size:10px">SBTI 灵魂配对 · made with 💜</span>
-    </div>
+    <div class="footer" style="margin-top:24px">纯属娱乐 · 认真你就输了<br><span style="font-size:10px">SBTI 灵魂配对 · made with 💜</span></div>
   </div>
 </div>
 
-<!-- ===== SHARE OVERLAY ===== -->
-<div class="share-overlay" id="shareOverlay" onclick="closeShare(event)">
-  <div style="text-align:center">
-    <div class="share-card" id="shareCard">
-      <button class="close-share" onclick="closeShare(event)">×</button>
-      <div class="share-card-header">
-        <div class="brand">— SBTI 灵魂配对 —</div>
-      </div>
-      <div class="share-card-vs">
-        <div class="share-avatar vs-avatar-a" id="sEmojiA"></div>
-        <span style="font-size:20px">💕</span>
-        <div class="share-avatar vs-avatar-b" id="sEmojiB"></div>
-      </div>
-      <div id="sNames" style="text-align:center;font-size:13px;color:var(--text2);margin-bottom:8px"></div>
-      <div class="share-score-big" id="sScore"></div>
-      <div class="share-verdict" id="sVerdict"></div>
-      <div class="share-dims" id="sDims"></div>
-      <div class="share-tags" id="sTags"></div>
-      <div class="share-footer">
-        🔮 SBTI 灵魂配对 · 纯属娱乐<br>
-        <div class="qr-hint">长按保存图片 分享给 TA 看看</div>
-      </div>
-    </div>
-    <div class="share-tip">📱 长按或截图保存分享</div>
-  </div>
+<!-- share overlay -->
+<div class="share-overlay" id="shareOverlay">
+  <div class="share-inner" id="shareInner"></div>
 </div>
+
+<!-- hidden render card -->
+<div class="render-card"><div class="sc" id="shareCard"></div></div>
+<!-- hidden qr code container -->
+<div id="qrTemp" style="position:fixed;left:-9999px;top:0;z-index:-1;width:70px;height:70px"></div>
 
 <script>
-// ============ DATA ============
-const TYPES = [
-  {code:"CTRL",name:"拿捏者",emoji:"🎮",desc:"怎么样，被我拿捏了吧？",rarity:"C",
-   vec:[2,2,2,1,2,2,2,2,2,2,2,2,2,2,1]},
-  {code:"GOGO",name:"行者",emoji:"🚀",desc:"gogogo~出发咯",rarity:"C",
-   vec:[2,2,2,2,2,1,2,1,2,2,2,2,2,1,2]},
-  {code:"SEXY",name:"尤物",emoji:"💃",desc:"您就是天生的尤物！",rarity:"N",
-   vec:[2,2,2,2,2,2,2,2,2,1,1,1,2,2,2]},
-  {code:"OJBK",name:"无所谓人",emoji:"😮‍💨",desc:"我说随便，是真的随便。",rarity:"N",
-   vec:[1,1,1,1,1,1,1,1,1,0,0,0,0,1,0]},
-  {code:"MUM",name:"妈妈",emoji:"🤱",desc:"或许...我可以叫你妈妈吗？",rarity:"R",
-   vec:[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]},
-  {code:"FAKE",name:"伪人",emoji:"🎭",desc:"已经，没有人类了。",rarity:"R",
-   vec:[1,0,1,0,1,0,2,1,1,1,1,2,2,0,0]},
-  {code:"OH-NO",name:"哦不人",emoji:"😱",desc:"哦不！我怎么会是这个人格？",rarity:"R",
-   vec:[0,0,1,1,1,1,0,1,0,1,1,1,1,1,1]},
-  {code:"IMSB",name:"傻者",emoji:"🤪",desc:"认真的么？我真的是…？",rarity:"R",
-   vec:[0,0,0,1,1,0,1,0,0,0,1,1,1,0,1]},
-  {code:"SHIT",name:"愤世者",emoji:"💢",desc:"这个世界，构石一坨。",rarity:"R",
-   vec:[1,1,2,0,0,0,0,0,0,1,2,1,0,0,2]},
-  {code:"ZZZZ",name:"装死者",emoji:"😴",desc:"我没死，我只是在睡觉。",rarity:"R",
-   vec:[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0]},
-  {code:"ATM",name:"送钱者",emoji:"💸",desc:"你以为我很有钱吗？",rarity:"R",
-   vec:[1,1,1,2,2,2,2,1,1,1,1,1,2,2,1]},
-  {code:"LOVE-R",name:"多情者",emoji:"💘",desc:"爱意太满，现实显得有点贫瘠。",rarity:"R",
-   vec:[1,1,1,2,2,2,1,1,2,1,0,0,2,2,2]},
-  {code:"MONK",name:"僧人",emoji:"🧘",desc:"没有那种世俗的欲望。",rarity:"R",
-   vec:[2,2,2,0,0,0,2,2,2,1,1,1,0,0,1]},
-  {code:"BOSS",name:"领导者",emoji:"👔",desc:"方向盘给我，我来开。",rarity:"SR",
-   vec:[2,2,2,1,1,2,2,2,2,2,2,2,2,1,2]},
-  {code:"THAN-K",name:"感恩者",emoji:"🙏",desc:"我感谢苍天！我感谢大地！",rarity:"SR",
-   vec:[2,2,2,2,2,1,2,1,2,1,1,1,2,1,2]},
-  {code:"MALO",name:"吗喽",emoji:"🐒",desc:"人生是个副本，而我只是一只吗喽。",rarity:"SR",
-   vec:[0,0,0,1,1,1,0,0,0,1,0,1,1,1,0]},
-  {code:"Dior-s",name:"屌丝",emoji:"🧢",desc:"等着我屌丝逆袭。",rarity:"SR",
-   vec:[0,1,1,0,1,0,1,0,1,2,1,1,1,1,1]},
-  {code:"JOKE-R",name:"小丑",emoji:"🤡",desc:"原来我们都是小丑。",rarity:"SR",
-   vec:[1,0,0,1,2,1,0,0,0,1,0,1,2,1,0]},
-  {code:"POOR",name:"贫困者",emoji:"🪹",desc:"我穷，但我很专。",rarity:"SR",
-   vec:[1,1,1,0,0,0,0,0,1,1,1,2,0,0,0]},
-  {code:"SOLO",name:"孤儿",emoji:"🌑",desc:"我哭了，我怎么会是孤儿？",rarity:"SR",
-   vec:[0,0,0,0,0,0,0,0,0,1,1,1,0,0,0]},
-  {code:"DRUNK",name:"酒鬼",emoji:"🍺",desc:"烈酒烧喉，不得不醉。",rarity:"SR",
-   vec:[0,0,1,1,1,0,0,0,0,0,0,0,1,1,2]},
-  {code:"FUCK",name:"草者",emoji:"🤬",desc:"操！这是什么人格？",rarity:"SSR",
-   vec:[0,1,2,0,0,0,0,2,0,2,2,2,0,0,2]},
-  {code:"WOC",name:"握草人",emoji:"😵",desc:"卧槽，我怎么是这个人格？",rarity:"C",
-   vec:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},
-  {code:"THIN-K",name:"思考者",emoji:"🧠",desc:"已深度思考100s。",rarity:"N",
-   vec:[2,2,2,1,0,1,2,2,2,2,2,1,0,1,1]},
-  {code:"DEAD",name:"死者",emoji:"💀",desc:"我，还活着吗？",rarity:"R",
-   vec:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
-  {code:"IMFW",name:"废物",emoji:"🗑️",desc:"我真的...是废物吗？",rarity:"R",
-   vec:[0,0,0,0,0,0,0,0,0,0,0,1,0,0,0]},
-  {code:"HHHH",name:"傻乐者",emoji:"😆",desc:"哈哈哈哈哈。",rarity:"N",
-   vec:[2,1,1,2,2,1,2,0,2,1,0,0,2,1,2]},
+const TYPES=[
+{code:"CTRL",name:"拿捏者",emoji:"🎮",rarity:"C",vec:[2,2,2,1,2,2,2,2,2,2,2,2,2,2,1]},
+{code:"GOGO",name:"行者",emoji:"🚀",rarity:"C",vec:[2,2,2,2,2,1,2,1,2,2,2,2,2,1,2]},
+{code:"SEXY",name:"尤物",emoji:"💃",rarity:"N",vec:[2,2,2,2,2,2,2,2,2,1,1,1,2,2,2]},
+{code:"OJBK",name:"无所谓人",emoji:"😮‍💨",rarity:"N",vec:[1,1,1,1,1,1,1,1,1,0,0,0,0,1,0]},
+{code:"MUM",name:"妈妈",emoji:"🤱",rarity:"R",vec:[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]},
+{code:"FAKE",name:"伪人",emoji:"🎭",rarity:"R",vec:[1,0,1,0,1,0,2,1,1,1,1,2,2,0,0]},
+{code:"OH-NO",name:"哦不人",emoji:"😱",rarity:"R",vec:[0,0,1,1,1,1,0,1,0,1,1,1,1,1,1]},
+{code:"IMSB",name:"傻者",emoji:"🤪",rarity:"R",vec:[0,0,0,1,1,0,1,0,0,0,1,1,1,0,1]},
+{code:"SHIT",name:"愤世者",emoji:"💢",rarity:"R",vec:[1,1,2,0,0,0,0,0,0,1,2,1,0,0,2]},
+{code:"ZZZZ",name:"装死者",emoji:"😴",rarity:"R",vec:[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0]},
+{code:"ATM",name:"送钱者",emoji:"💸",rarity:"R",vec:[1,1,1,2,2,2,2,1,1,1,1,1,2,2,1]},
+{code:"LOVE-R",name:"多情者",emoji:"💘",rarity:"R",vec:[1,1,1,2,2,2,1,1,2,1,0,0,2,2,2]},
+{code:"MONK",name:"僧人",emoji:"🧘",rarity:"R",vec:[2,2,2,0,0,0,2,2,2,1,1,1,0,0,1]},
+{code:"BOSS",name:"领导者",emoji:"👔",rarity:"SR",vec:[2,2,2,1,1,2,2,2,2,2,2,2,2,1,2]},
+{code:"THAN-K",name:"感恩者",emoji:"🙏",rarity:"SR",vec:[2,2,2,2,2,1,2,1,2,1,1,1,2,1,2]},
+{code:"MALO",name:"吗喽",emoji:"🐒",rarity:"SR",vec:[0,0,0,1,1,1,0,0,0,1,0,1,1,1,0]},
+{code:"Dior-s",name:"屌丝",emoji:"🧢",rarity:"SR",vec:[0,1,1,0,1,0,1,0,1,2,1,1,1,1,1]},
+{code:"JOKE-R",name:"小丑",emoji:"🤡",rarity:"SR",vec:[1,0,0,1,2,1,0,0,0,1,0,1,2,1,0]},
+{code:"POOR",name:"贫困者",emoji:"🪹",rarity:"SR",vec:[1,1,1,0,0,0,0,0,1,1,1,2,0,0,0]},
+{code:"SOLO",name:"孤儿",emoji:"🌑",rarity:"SR",vec:[0,0,0,0,0,0,0,0,0,1,1,1,0,0,0]},
+{code:"DRUNK",name:"酒鬼",emoji:"🍺",rarity:"SR",vec:[0,0,1,1,1,0,0,0,0,0,0,0,1,1,2]},
+{code:"FUCK",name:"草者",emoji:"🤬",rarity:"SSR",vec:[0,1,2,0,0,0,0,2,0,2,2,2,0,0,2]},
+{code:"WOC",name:"握草人",emoji:"😵",rarity:"C",vec:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},
+{code:"THIN-K",name:"思考者",emoji:"🧠",rarity:"N",vec:[2,2,2,1,0,1,2,2,2,2,2,1,0,1,1]},
+{code:"DEAD",name:"死者",emoji:"💀",rarity:"R",vec:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+{code:"IMFW",name:"废物",emoji:"🗑️",rarity:"R",vec:[0,0,0,0,0,0,0,0,0,0,0,1,0,0,0]},
+{code:"HHHH",name:"傻乐者",emoji:"😆",rarity:"N",vec:[2,1,1,2,2,1,2,0,2,1,0,0,2,1,2]},
 ];
-
-const DIMS = [
-  {name:"自尊自信",model:"自我"},
-  {name:"自我清晰度",model:"自我"},
-  {name:"核心价值观",model:"自我"},
-  {name:"依恋安全感",model:"情感"},
-  {name:"情感投入度",model:"情感"},
-  {name:"边界与依赖",model:"情感"},
-  {name:"世界观倾向",model:"态度"},
-  {name:"规则与灵活",model:"态度"},
-  {name:"人生意义感",model:"态度"},
-  {name:"动机取向",model:"行动"},
-  {name:"决策风格",model:"行动"},
-  {name:"执行模式",model:"行动"},
-  {name:"社交主动性",model:"社会"},
-  {name:"人际边界",model:"社会"},
-  {name:"表达与真实",model:"社会"},
+const DIMS=[
+{name:"自尊自信",short:"自信"},{name:"自我清晰度",short:"清晰"},{name:"核心价值观",short:"价值观"},
+{name:"依恋安全感",short:"安全感"},{name:"情感投入度",short:"投入"},{name:"边界与依赖",short:"边界"},
+{name:"世界观倾向",short:"世界观"},{name:"规则与灵活",short:"灵活"},{name:"人生意义感",short:"意义"},
+{name:"动机取向",short:"动机"},{name:"决策风格",short:"决策"},{name:"执行模式",short:"执行"},
+{name:"社交主动性",short:"社交"},{name:"人际边界",short:"人际"},{name:"表达与真实",short:"真实"},
 ];
+const MN=["自我","情感","态度","行动","社会"];
+let selA=null,selB=null;
 
-const MODEL_ICONS = {"自我":"🪞","情感":"💗","态度":"🌍","行动":"⚡","社会":"🤝"};
-
-// ============ STATE ============
-let selA = null, selB = null;
-
-// ============ RENDER GRIDS ============
-function renderGrid(containerId, side) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = TYPES.map((t,i) => `
-    <div class="type-btn" data-idx="${i}" onclick="selectType('${side}',${i})">
-      <span class="rarity rarity-${t.rarity}">${t.rarity}</span>
-      <span class="emoji">${t.emoji}</span>
-      <span class="code">${t.code}</span>
-      <span class="name">${t.name}</span>
-    </div>
-  `).join("");
+function renderGrid(id,side){
+  document.getElementById(id).innerHTML=TYPES.map((t,i)=>`<div class="type-btn" data-idx="${i}" onclick="selectType('${side}',${i})"><span class="rarity rarity-${t.rarity}">${t.rarity}</span><span class="emoji">${t.emoji}</span><span class="code">${t.code}</span><span class="name">${t.name}</span></div>`).join("");
 }
-
-function selectType(side, idx) {
-  if (side === "A") {
-    selA = idx;
-    document.querySelectorAll("#gridA .type-btn").forEach(b => b.classList.remove("selected-a"));
-    document.querySelector(`#gridA .type-btn[data-idx="${idx}"]`).classList.add("selected-a");
-  } else {
-    selB = idx;
-    document.querySelectorAll("#gridB .type-btn").forEach(b => b.classList.remove("selected-b"));
-    document.querySelector(`#gridB .type-btn[data-idx="${idx}"]`).classList.add("selected-b");
-  }
+function selectType(side,idx){
+  if(side==="A"){selA=idx;document.querySelectorAll("#gridA .type-btn").forEach(b=>b.classList.remove("selected-a"));document.querySelector(`#gridA .type-btn[data-idx="${idx}"]`).classList.add("selected-a")}
+  else{selB=idx;document.querySelectorAll("#gridB .type-btn").forEach(b=>b.classList.remove("selected-b"));document.querySelector(`#gridB .type-btn[data-idx="${idx}"]`).classList.add("selected-b")}
   updateVs();
 }
-
-function updateVs() {
-  const vs = document.getElementById("vsDisplay");
-  const btn = document.getElementById("matchBtn");
-  if (selA !== null && selB !== null) {
-    vs.style.display = "flex";
-    document.getElementById("vsEmojiA").textContent = TYPES[selA].emoji;
-    document.getElementById("vsCodeA").textContent = TYPES[selA].code;
-    document.getElementById("vsEmojiB").textContent = TYPES[selB].emoji;
-    document.getElementById("vsCodeB").textContent = TYPES[selB].code;
-    btn.disabled = false;
-  } else if (selA !== null || selB !== null) {
-    vs.style.display = "none";
-    btn.disabled = true;
-  }
+function updateVs(){
+  const vs=document.getElementById("vsDisplay"),btn=document.getElementById("matchBtn");
+  if(selA!==null&&selB!==null){vs.style.display="flex";document.getElementById("vsEmojiA").textContent=TYPES[selA].emoji;document.getElementById("vsCodeA").textContent=TYPES[selA].code;document.getElementById("vsEmojiB").textContent=TYPES[selB].emoji;document.getElementById("vsCodeB").textContent=TYPES[selB].code;btn.disabled=false}
+  else{vs.style.display="none";btn.disabled=true}
+}
+function calcMatch(a,b){
+  const va=TYPES[a].vec,vb=TYPES[b].vec;let dist=0;const ds=[];
+  for(let i=0;i<15;i++){const d=Math.abs(va[i]-vb[i]);dist+=d;ds.push(Math.round((1-d/2)*100))}
+  let sim=Math.round((1-dist/30)*100),comp=0;
+  for(let i=0;i<15;i++)if((va[i]===0&&vb[i]===2)||(va[i]===2&&vb[i]===0))comp+=0.8;
+  if(a===b)sim=Math.min(sim+15,99);
+  sim=Math.max(12,Math.min(99,Math.round(sim+comp)));
+  const ms={};MN.forEach((m,mi)=>{const s=mi*3;ms[m]=Math.round((ds[s]+ds[s+1]+ds[s+2])/3)});
+  return{score:sim,dimScores:ds,modelScores:ms};
 }
 
-// ============ MATCHING ALGORITHM ============
-function calcMatch(a, b) {
-  const va = TYPES[a].vec, vb = TYPES[b].vec;
-  // Manhattan distance → similarity
-  let maxDist = 15 * 2; // max possible
-  let dist = 0;
-  const dimScores = [];
-  for (let i = 0; i < 15; i++) {
-    const d = Math.abs(va[i] - vb[i]);
-    dist += d;
-    dimScores.push(Math.round((1 - d / 2) * 100));
-  }
-  
-  // Base similarity
-  let sim = Math.round((1 - dist / maxDist) * 100);
-  
-  // Complementary bonus: opposite extremes that balance each other
-  let compBonus = 0;
-  for (let i = 0; i < 15; i++) {
-    if ((va[i] === 0 && vb[i] === 2) || (va[i] === 2 && vb[i] === 0)) {
-      compBonus += 0.8;
-    }
-  }
-  
-  // Same type bonus
-  if (a === b) sim = Math.min(sim + 15, 99);
-  
-  // Add some complementary value
-  sim = Math.min(Math.round(sim + compBonus), 99);
-  
-  // Ensure range
-  sim = Math.max(12, Math.min(99, sim));
-  
-  // Model-level scores
-  const modelScores = {};
-  const models = ["自我","情感","态度","行动","社会"];
-  models.forEach((m,mi) => {
-    const start = mi * 3;
-    modelScores[m] = Math.round((dimScores[start] + dimScores[start+1] + dimScores[start+2]) / 3);
-  });
-  
-  return { score: sim, dimScores, modelScores };
+function getVerdict(s){
+  if(s>=90)return{text:"天选之人 · 宇宙欠你们一个热搜",icon:"👑",color:"#ffd700"};
+  if(s>=80)return{text:"灵魂焊死 · 分开算犯罪",icon:"✨",color:"#7c5cff"};
+  if(s>=70)return{text:"精神Wi-Fi · 信号满格",icon:"🌟",color:"#00d4aa"};
+  if(s>=60)return{text:"有点东西 · 磕了磕了",icon:"🔥",color:"#ff8c42"};
+  if(s>=45)return{text:"五五开 · 吵完还得和好",icon:"🌊",color:"cornflowerblue"};
+  if(s>=30)return{text:"平行宇宙 · 偶尔交汇",icon:"🌀",color:"#b266ff"};
+  return{text:"冤家体质 · 吵架但上瘾",icon:"⚡",color:"#ff6b9d"};
 }
-
-// ============ VERDICT & ANALYSIS GENERATOR ============
-function getVerdict(score) {
-  if (score >= 90) return {text:"天选之人 · 命中注定",icon:"👑",color:"var(--gold)"};
-  if (score >= 80) return {text:"灵魂伴侣 · 高度契合",icon:"✨",color:"var(--accent)"};
-  if (score >= 70) return {text:"默契搭档 · 惺惺相惜",icon:"🌟",color:"var(--accent3)"};
-  if (score >= 60) return {text:"有趣组合 · 互有火花",icon:"🔥",color:"#ff8c42"};
-  if (score >= 45) return {text:"磨合空间 · 需要耐心",icon:"🌊",color:"cornflowerblue"};
-  if (score >= 30) return {text:"次元壁厚 · 各有精彩",icon:"🌀",color:"#b266ff"};
-  return {text:"冤家路窄 · 但很刺激",icon:"⚡",color:"var(--accent2)"};
+function genTagline(ta,tb,s){
+  const h=[`${ta.name}×${tb.name}，让算法都沉默了`,`你俩灵魂频率同步到连bug都一样`,`再这么合拍下去，AI都要失业了`];
+  const m=[`${ta.name}碰上${tb.name}，化学反应已爆表`,`你们之间有种玄学引力，别问，上辈子的`,`${ta.name}和${tb.name}的组合？命运编剧的手笔`];
+  const l=[`${ta.name}+${tb.name}？编剧都不敢这么写`,`你们的组合在整个SBTI宇宙都是独一份`,`对立面也是关系，而且是最刺激的那种`];
+  const a=s>=70?h:s>=45?m:l;return a[Math.floor(Math.random()*a.length)];
 }
-
-function genTagline(ta, tb, score) {
-  const pairs = {
-    high: [
-      `${ta.name}遇上${tb.name}，这是宇宙级的精神共振`,
-      `你们的灵魂频率几乎完全同步`,
-      `这种默契，连AI都算不出更好的配对了`,
-    ],
-    mid: [
-      `${ta.name}和${tb.name}之间有种说不清的化学反应`,
-      `你们互补的地方比想象中多`,
-      `不一样的灵魂，却有着奇妙的吸引力`,
-    ],
-    low: [
-      `${ta.name}和${tb.name}？这组合就很赛博朋克`,
-      `两个世界的人，碰撞出的火花格外耀眼`,
-      `虽然维度差异大，但谁说对立面不能相爱？`,
-    ]
-  };
-  const tier = score >= 70 ? "high" : score >= 45 ? "mid" : "low";
-  return pairs[tier][Math.floor(Math.random() * pairs[tier].length)];
+function getRelType(ta,tb,s,ms){
+  if(ta.code===tb.code)return{type:`双${ta.name}共振体`,desc:`两个${ta.name}凑一起？这不是配对，这是灵魂复制粘贴。你们懂彼此到可怕的程度——连发疯的方式都一模一样。世界上找不到比这更"我懂你"的组合了，毕竟你们就是同一个物种。`};
+  const best=MN.reduce((a,b)=>ms[a]>=ms[b]?a:b);
+  const worst=MN.reduce((a,b)=>ms[a]<=ms[b]?a:b);
+  if(s>=80){const p=[{type:"神仙眷侣型",desc:`${ta.name}和${tb.name}的灵魂简直出厂就预装了蓝牙配对。你们在「${best}」维度上的默契堪称离谱——连沉默都是同一个频道。建议直接原地结拜，或者更进一步，你们看着办。`},{type:"双向奔赴型",desc:`你们像两块拼图的最后两片，缺谁画面都不完整。${ta.name}的能量刚好接住${tb.name}的频率，反过来也是。这种双向同步在SBTI数据库里属于稀有事件。`}];return p[Math.floor(Math.random()*p.length)]}
+  if(s>=60){const p=[{type:"火花碰撞型",desc:`${ta.name}和${tb.name}之间有种说不清的张力——不是无聊的和谐，而是有摩擦有火花有"我不同意你但被你吸引"的复杂关系。在「${best}」上很搭，但「${worst}」嘛……就是你们吵架的导火索。`},{type:"互补搭档型",desc:`一个${ta.name}一个${tb.name}，这是宇宙的平衡机制。你的短板是TA的长处，TA想不通的你三秒解决。用好了是超英联盟，用不好是……世界大战。`}];return p[Math.floor(Math.random()*p.length)]}
+  if(s>=40)return{type:"反差萌组合",desc:`${ta.name}和${tb.name}在一起，像火锅底料倒进冰淇淋——听着离谱，但尝过的人都说"嗯？好像还行？"。在「${worst}」上差距明显，但正因为这份差异，能从彼此身上看到从没见过的世界。`};
+  return{type:"次元破壁组合",desc:`${ta.name}和${tb.name}放一起需要想象力——你们像来自不同SBTI星球的生物，思维行为甚至对世界的理解都完全不同。但嘿，最有故事性的CP往往就是这种"不可能"组合。你们的关系不会无聊，这点可以确定。`};
 }
-
-function genStrengths(ta, tb, dimScores, modelScores) {
-  const items = [];
-  const models = ["自我","情感","态度","行动","社会"];
-  
-  // Find best model
-  let bestModel = models[0], bestScore = 0;
-  models.forEach(m => { if (modelScores[m] > bestScore) { bestScore = modelScores[m]; bestModel = m; }});
-  
-  if (bestScore >= 80) {
-    items.push({icon:"🎯",text:`在「${bestModel}模型」上高度共鸣（${bestScore}%），说明你们在这个维度上几乎是同频共振的灵魂`});
-  }
-  
-  // Check specific dims
-  const highDims = dimScores.map((s,i) => ({s,i})).filter(x => x.s >= 80).sort((a,b) => b.s - a.s);
-  if (highDims.length >= 3) {
-    const names = highDims.slice(0,3).map(x => DIMS[x.i].name).join("、");
-    items.push({icon:"💎",text:`在${names}等维度上的匹配度都超过80%，说明你们有深层次的精神连接`});
-  }
-  
-  // Complementary analysis
-  const va = ta.vec, vb = tb.vec;
-  const compDims = [];
-  for (let i = 0; i < 15; i++) {
-    if ((va[i] === 0 && vb[i] === 2) || (va[i] === 2 && vb[i] === 0)) {
-      compDims.push(DIMS[i].name);
-    }
-  }
-  if (compDims.length > 0) {
-    items.push({icon:"🧩",text:`在${compDims.slice(0,2).join("和")}上互补，TA 的强项恰好是你的短板——这种组合反而能互相成就`});
-  }
-  
-  // Emotional resonance
-  if (modelScores["情感"] >= 60) {
-    items.push({icon:"💗",text:`情感层面的共鸣度${modelScores["情感"]}%——你们对爱的理解方式是相通的`});
-  }
-  
-  // Action alignment
-  if (modelScores["行动"] >= 60) {
-    items.push({icon:"⚡",text:`行动驱动力匹配度${modelScores["行动"]}%——说走就走时，你们的方向是一致的`});
-  }
-  
-  if (items.length === 0) {
-    items.push({icon:"🌈",text:`虽然整体差异较大，但差异本身就是一种互补——你们能从彼此身上看到自己没有的世界`});
-  }
-  
-  return items.slice(0, 4);
+function genScenes(ta,tb,s,ms,ds){
+  const scenes=[];
+  const ts=Math.round(ms["行动"]*.4+ms["态度"]*.3+ms["社会"]*.3);
+  const tt={h:`你们旅行简直教科书级默契。${ta.name}说"走"，${tb.name}已经收拾行李了。方向一致节奏同步，连选餐厅都心有灵犀。唯一风险：旅行太顺缺少"灾难培养感情"的刺激。`,m:`旅行风格有点差异——一个想躺酒店一个要暴走打卡。但这不是坏事！${ta.name}负责规划，${tb.name}负责打破规划，最好的回忆往往来自"计划之外"。`,l:`你们一起旅行可能需要签"互不伤害协议"。${ta.name}的旅行方式在${tb.name}看来约等于折磨，反之亦然。建议：分头行动，晚上汇合，各玩各的，感情反而更好。`};
+  scenes.push({icon:"✈️",title:"一起旅行",score:ts,text:tt[ts>=70?"h":ts>=40?"m":"l"]});
+  const fs=Math.round(ms["情感"]*.4+ms["社会"]*.3+ds[14]*.3);
+  const ft={h:`好消息：你们很少吵架。坏消息：吵了和好也快得离谱——一个还在生气另一个已经道歉了。情感频率太接近根本吵不起来。优点，但偶尔也挺无聊的。`,m:`吵架模式大概是：${ta.name}先爆发${tb.name}先沉默，然后反过来循环往复。好在有"吵完还想和好"的底层驱动——比什么沟通技巧都管用。冷战不超过24小时。`,l:`你们吵架时……旁观者建议退后三米。冲突方式完全不同频道，一个觉得"你怎么能这样"另一个觉得"你在说啥"。但反过来想，能吵说明还在乎。最可怕的是连吵的欲望都没有。`};
+  scenes.push({icon:"💥",title:"吵架模式",score:fs,text:ft[fs>=70?"h":fs>=40?"m":"l"]});
+  const cs=Math.round(ms["自我"]*.3+ms["态度"]*.3+ds[14]*.2+ds[8]*.2);
+  const ct={h:`深夜聊天的危险：开口就停不下来。从人生意义聊到外星人再到早餐吃什么，任何话题都能共鸣。${ta.name}的脑回路和${tb.name}出奇同步，说上半句就知道下半句。`,m:`深夜聊天会有趣碰撞——${ta.name}抛观点，${tb.name}接住但给完全不同角度。不是每句话都被理解，但那些"啊原来你这么想"的瞬间特别珍贵。`,l:`深夜聊天？可能出现长时间沉默。不是没话说而是思维方式差太多，一方觉得理所当然的事另一方需要翻译三遍。但愿意耐心倾听的话，"不理解但想理解"本身就很浪漫。`};
+  scenes.push({icon:"🌙",title:"深夜聊天",score:cs,text:ct[cs>=70?"h":cs>=40?"m":"l"]});
+  const qs=Math.round(ds[9]*.3+ds[10]*.3+ds[11]*.4);
+  const qt={h:`搞钱这事上你们是真战友。对"要不要努力""怎么努力""努力到啥程度"认知高度一致。建议直接合伙开公司（不是）。连摸鱼时间都差不多。`,m:`搞钱态度有差异但不冲突。一个激进一个稳健，一个主攻一个兜底。商业上叫"互补型合伙"，感情里叫"你赚我花"。开玩笑的。大概。`,l:`搞钱上建议各管各的账户。${ta.name}的消费观在${tb.name}看来大概是"这也行？"。核心矛盾不在赚多赚少，在于对"钱意味着什么"理解完全不同。`};
+  scenes.push({icon:"💰",title:"搞钱同步率",score:qs,text:qt[qs>=70?"h":qs>=40?"m":"l"]});
+  const ss=Math.round(ms["社会"]*.6+ds[12]*.2+ds[14]*.2);
+  const st={h:`你们在社交场是"黄金搭档"。社交能量互相加buff出场自带氛围组。朋友聚会有你们就不冷场——说不定还会热到着火。`,m:`社交风格不太一样但组合起来覆盖面更广。一个暖场一个深入交流，一个社交发动机一个稳定器。朋友圈可能不太重叠但这恰好带来新鲜感。`,l:`把你俩放进派对……一个可能已经High了另一个在角落看手机。不过不需要社交风格一样——互相理解对方的"充电方式"就够了。`};
+  scenes.push({icon:"🎉",title:"社交场合",score:ss,text:st[ss>=70?"h":ss>=40?"m":"l"]});
+  return scenes;
 }
-
-function genChallenges(ta, tb, dimScores, modelScores) {
-  const items = [];
-  const models = ["自我","情感","态度","行动","社会"];
-  
-  let worstModel = models[0], worstScore = 100;
-  models.forEach(m => { if (modelScores[m] < worstScore) { worstScore = modelScores[m]; worstModel = m; }});
-  
-  if (worstScore < 40) {
-    items.push({icon:"⚠️",text:`「${worstModel}模型」匹配度仅${worstScore}%，这个领域可能是你们最大的分歧区——需要更多包容和理解`});
-  }
-  
-  const lowDims = dimScores.map((s,i) => ({s,i})).filter(x => x.s <= 30).sort((a,b) => a.s - b.s);
-  if (lowDims.length > 0) {
-    const d = DIMS[lowDims[0].i];
-    items.push({icon:"🔥",text:`「${d.name}」维度的落差最大——一个${ta.vec[lowDims[0].i]>1?"高":"低"}、一个${tb.vec[lowDims[0].i]>1?"高":"低"}，容易在这个点上产生摩擦`});
-  }
-  
-  if (modelScores["情感"] < 40) {
-    items.push({icon:"💔",text:`情感模式差异明显，对亲密关系的需求和表达方式不太一样，需要主动沟通`});
-  }
-  
-  if (items.length === 0) {
-    items.push({icon:"🌊",text:`你们的挑战不在某个维度，而在于如何在高度相似中保持各自的独特性`});
-  }
-  
-  return items.slice(0, 3);
+function genStrengths(ta,tb,ds,ms){
+  const items=[];const best=MN.reduce((a,b)=>ms[a]>=ms[b]?a:b);
+  if(ms[best]>=70)items.push({icon:"🎯",text:`「${best}」维度匹配离谱（${ms[best]}%），你们在这个领域的默契已经超越语言——一个眼神就够`});
+  const hd=ds.map((s,i)=>({s,i})).filter(x=>x.s>=80).sort((a,b)=>b.s-a.s);
+  if(hd.length>=2)items.push({icon:"💎",text:`在${hd.slice(0,3).map(x=>DIMS[x.i].short).join("、")}上都超80%，这种多维同频属于SBTI限定款`});
+  const cd=[];for(let i=0;i<15;i++)if((ta.vec[i]===0&&tb.vec[i]===2)||(ta.vec[i]===2&&tb.vec[i]===0))cd.push(DIMS[i].short);
+  if(cd.length>0)items.push({icon:"🧩",text:`在${cd.slice(0,2).join("和")}上完美互补——你的bug是TA的feature，最高级的适配`});
+  if(ms["情感"]>=60)items.push({icon:"💗",text:`情感共鸣${ms["情感"]}%，你们对"在乎"的理解方式是通的，不需要翻译`});
+  if(!items.length)items.push({icon:"🌈",text:`差异就是你们最大的资产——正因为不同，才能带给彼此"原来世界还能这样"的惊喜`});
+  return items.slice(0,4);
 }
-
-function genAdvice(ta, tb, score, modelScores) {
-  const tips = [];
-  
-  if (score >= 70) {
-    tips.push(`你们天然契合，但别因为太合拍就忽略了边界——再好的关系也需要呼吸空间`);
-    if (modelScores["社会"] >= 60) {
-      tips.push(`社交风格很搭，可以一起参加活动、认识新朋友——你们的能量场会互相放大`);
-    }
-  } else if (score >= 45) {
-    tips.push(`差异是你们关系中最有价值的部分。与其试图同化，不如学会欣赏对方的"不一样"`);
-    if (modelScores["态度"] < 50) {
-      tips.push(`世界观有差距？试试换位思考——用对方的视角看一次世界，你会发现新大陆`);
-    }
-  } else {
-    tips.push(`你们像两颗运行在不同轨道的星球——距离感不是问题，关键是找到引力平衡点`);
-    tips.push(`建议从「行动」维度入手：一起做一件事，比说一千句话更能拉近距离`);
-  }
-  
-  return tips;
+function genChallenges(ta,tb,ds,ms){
+  const items=[];const worst=MN.reduce((a,b)=>ms[a]<=ms[b]?a:b);
+  if(ms[worst]<40)items.push({icon:"💀",text:`「${worst}」只有${ms[worst]}%，最容易互相看不懂——不是谁有问题，是操作系统不兼容`});
+  const ld=ds.map((s,i)=>({s,i})).filter(x=>x.s<=30).sort((a,b)=>a.s-b.s);
+  if(ld.length>0)items.push({icon:"⚠️",text:`「${DIMS[ld[0].i].name}」是雷区——一个拉满一个见底，最让你们困惑的冲突点`});
+  if(ms["情感"]<40)items.push({icon:"💔",text:`情感表达差距有点大，一个觉得很明显了另一个完全没收到信号。建议：直说，别猜`});
+  if(!items.length)items.push({icon:"😤",text:`最大挑战是"太像了导致互不相让"——两个一样倔的人碰上了，就看谁先服软`});
+  return items.slice(0,3);
 }
-
-function genKeywords(ta, tb, score, modelScores) {
-  const kws = [];
-  if (score >= 80) kws.push({t:"天生一对",c:""});
-  if (score >= 60) kws.push({t:"灵魂共振",c:"warm"});
-  if (modelScores["情感"] >= 70) kws.push({t:"情感同频",c:"warm"});
-  if (modelScores["自我"] >= 70) kws.push({t:"三观一致",c:"green"});
-  if (modelScores["行动"] >= 70) kws.push({t:"行动力匹配",c:""});
-  if (modelScores["社会"] >= 70) kws.push({t:"社交风格合拍",c:"green"});
-  
-  const va = ta.vec, vb = tb.vec;
-  let compCount = 0;
-  for (let i = 0; i < 15; i++) if (Math.abs(va[i] - vb[i]) === 2) compCount++;
-  if (compCount >= 3) kws.push({t:"互补型搭档",c:"gold"});
-  if (score < 40) kws.push({t:"冤家CP",c:"warm"});
-  if (ta.rarity === "SSR" || tb.rarity === "SSR") kws.push({t:"SSR配对",c:"gold"});
-  if (ta.rarity === "SR" && tb.rarity === "SR") kws.push({t:"双SR组合",c:""});
-  
-  // Ensure at least some tags
-  if (kws.length < 2) {
-    kws.push({t:`${ta.name}×${tb.name}`,c:""});
-    kws.push({t:"独特组合",c:"green"});
-  }
-  
-  return kws.slice(0, 5);
+function genAdvice(ta,tb,s,ms){
+  const t=[];
+  if(s>=70){t.push(`合拍到离谱，但越是这样越注意：别把默契当成不沟通的理由。偶尔说出来，比"你应该懂我"管用一万倍`);t.push(`定期做点"出格"的事——打破舒适区才能发现彼此新面。不然会从"完美"变"无聊"`)}
+  else if(s>=45){t.push(`不需要变得更像彼此，学会说"我不理解你但我尊重你"——含金量超过一切甜言蜜语`);t.push(`吵架时记住：吵的不是输赢是"我在乎你所以受不了"。吵完记得抱一下，比什么道理都管用`)}
+  else{t.push(`你们是SBTI宇宙的"高难度副本"——不是不能通关，需要更多技巧。第一条：别试图改变对方，地球上没这项技术`);t.push(`找一个能一起做的具体事（做饭打游戏看剧），行动层面的同步比思维层面容易得多`)}
+  return t;
+}
+function genKeywords(ta,tb,s,ms){
+  const k=[];
+  if(s>=85)k.push({t:"灵魂出厂配对",c:"gold"});else if(s>=70)k.push({t:"精神Wi-Fi",c:""});
+  if(s>=60)k.push({t:"有CP感了",c:"warm"});
+  if(ms["情感"]>=70)k.push({t:"心动同步",c:"warm"});
+  if(ms["自我"]>=70)k.push({t:"三观焊死",c:"green"});
+  if(ms["行动"]>=70)k.push({t:"搞钱搭子",c:""});
+  if(ms["社会"]>=70)k.push({t:"社交黄金档",c:"green"});
+  let cc=0;for(let i=0;i<15;i++)if(Math.abs(ta.vec[i]-tb.vec[i])===2)cc++;
+  if(cc>=3)k.push({t:"互补怪兽",c:"gold"});
+  if(s<40)k.push({t:"冤家绝配",c:"warm"});
+  if(ta.code===tb.code)k.push({t:"复制粘贴体",c:"gold"});
+  if(ta.rarity==="SSR"||tb.rarity==="SSR")k.push({t:"SSR限定",c:"gold"});
+  if(ta.rarity==="SR"&&tb.rarity==="SR")k.push({t:"双SR暴击",c:""});
+  if(k.length<2){k.push({t:`${ta.name}×${tb.name}`,c:""});k.push({t:"独一无二",c:"green"})}
+  return k.slice(0,6);
 }
 
 // ============ DO MATCH ============
-function doMatch() {
-  if (selA === null || selB === null) return;
-  
-  const ta = TYPES[selA], tb = TYPES[selB];
-  const result = calcMatch(selA, selB);
-  const verdict = getVerdict(result.score);
-  
-  // Switch page
+function doMatch(){
+  if(selA===null||selB===null)return;
+  const ta=TYPES[selA],tb=TYPES[selB],r=calcMatch(selA,selB),v=getVerdict(r.score);
   document.getElementById("introPage").classList.remove("active");
   document.getElementById("resultPage").classList.add("active");
-  window.scrollTo({top: 0, behavior: "smooth"});
-  
-  // VS display
-  document.getElementById("rEmojiA").textContent = ta.emoji;
-  document.getElementById("rCodeA").textContent = `${ta.code} ${ta.name}`;
-  document.getElementById("rEmojiB").textContent = tb.emoji;
-  document.getElementById("rCodeB").textContent = `${tb.code} ${tb.name}`;
-  
-  // Score ring
-  const circumference = 2 * Math.PI * 70;
-  const offset = circumference * (1 - result.score / 100);
-  const circle = document.getElementById("scoreCircle");
-  circle.style.strokeDasharray = circumference;
-  circle.style.strokeDashoffset = circumference;
-  circle.style.setProperty("--ring-end", offset);
-  circle.style.animation = `ringDraw 1.5s ease forwards .3s`;
-  
-  // Animate score number
-  const scoreEl = document.getElementById("scoreNum");
-  let current = 0;
-  const target = result.score;
-  const step = () => {
-    current += Math.ceil((target - current) / 10);
-    if (current >= target) { current = target; scoreEl.textContent = current + "%"; return; }
-    scoreEl.textContent = current + "%";
-    requestAnimationFrame(step);
-  };
-  setTimeout(step, 500);
-  
-  document.getElementById("verdict").innerHTML = `${verdict.icon} ${verdict.text}`;
-  document.getElementById("verdict").style.color = verdict.color;
-  document.getElementById("tagline").textContent = genTagline(ta, tb, result.score);
-  
-  // ===== ANALYSIS CARDS =====
-  const cardsEl = document.getElementById("analysisCards");
-  let html = "";
-  
-  // Card 1: 五维雷达
-  html += `<div class="analysis-card">
-    <div class="card-title"><span class="icon">📊</span> 五维匹配分析</div>`;
-  const models = ["自我","情感","态度","行动","社会"];
-  models.forEach(m => {
-    const s = result.modelScores[m];
-    const cls = s >= 70 ? "high" : s >= 40 ? "mid" : "low";
-    html += `<div class="dim-row">
-      <div class="dim-label"><span>${MODEL_ICONS[m]} ${m}模型</span><span>${s}%</span></div>
-      <div class="dim-bar-wrap"><div class="dim-bar ${cls}" style="--bar-w:${s}%"></div></div>
-    </div>`;
+  window.scrollTo({top:0,behavior:"smooth"});
+  document.getElementById("rEmojiA").textContent=ta.emoji;
+  document.getElementById("rCodeA").textContent=`${ta.code} ${ta.name}`;
+  document.getElementById("rEmojiB").textContent=tb.emoji;
+  document.getElementById("rCodeB").textContent=`${tb.code} ${tb.name}`;
+  // ring
+  const circ=2*Math.PI*70,off=circ*(1-r.score/100),c=document.getElementById("scoreCircle");
+  c.style.strokeDasharray=circ;c.style.strokeDashoffset=circ;c.style.transition="none";
+  c.getBoundingClientRect();c.style.transition="stroke-dashoffset 1.5s ease";
+  setTimeout(()=>{c.style.strokeDashoffset=off},50);
+  const se=document.getElementById("scoreNum");let cur=0;
+  const step=()=>{cur+=Math.ceil((r.score-cur)/8);if(cur>=r.score){se.textContent=r.score+"%";return}se.textContent=cur+"%";requestAnimationFrame(step)};
+  setTimeout(step,400);
+  document.getElementById("verdict").innerHTML=`${v.icon} ${v.text}`;
+  document.getElementById("verdict").style.color=v.color;
+  document.getElementById("tagline").textContent=genTagline(ta,tb,r.score);
+
+  // build cards
+  const el=document.getElementById("analysisCards");let h="";
+  // 1. tags first
+  const kws=genKeywords(ta,tb,r.score,r.modelScores);
+  h+=`<div class="analysis-card" style="text-align:center"><div class="card-title" style="justify-content:center"><span class="icon">🏷️</span> 配对属性</div><div class="tag-row" style="justify-content:center">`;
+  kws.forEach(k=>{h+=`<span class="tag ${k.c}">${k.t}</span>`});h+=`</div></div>`;
+  // 2. relationship type
+  const rel=getRelType(ta,tb,r.score,r.modelScores);
+  h+=`<div class="rel-overview"><div class="rel-type" style="color:${v.color}">「${rel.type}」</div><div class="rel-desc">${rel.desc}</div></div>`;
+  // 3. scenes
+  const scenes=genScenes(ta,tb,r.score,r.modelScores,r.dimScores);
+  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">🎬</span> 真实场景预测</div>`;
+  scenes.forEach(sc=>{const cls=sc.score>=70?"ss-high":sc.score>=40?"ss-mid":"ss-low";const lb=sc.score>=70?"超搭":sc.score>=40?"还行":"刺激";
+    h+=`<div class="scene-item"><div class="scene-head"><span class="si">${sc.icon}</span>${sc.title}<span class="scene-score ${cls}">${lb} ${sc.score}%</span></div><div class="scene-body">${sc.text}</div></div>`});
+  h+=`</div>`;
+  // 4. 15-dim mini rings
+  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">🔬</span> 15维灵魂扫描</div><div class="dim-scroll-wrap"><div class="dim-scroll">`;
+  DIMS.forEach((d,i)=>{
+    const s=r.dimScores[i],rd=20,cr=2*Math.PI*rd,of=cr*(1-s/100);
+    const co=s>=70?"#00d4aa":s>=40?"#ffa502":"#ff6b81";
+    h+=`<div class="mini-ring"><div class="mini-ring-wrap"><svg width="48" height="48" viewBox="0 0 48 48" style="transform:rotate(-90deg)"><circle cx="24" cy="24" r="${rd}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="4"/><circle cx="24" cy="24" r="${rd}" fill="none" stroke="${co}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${cr}" stroke-dashoffset="${of}"/></svg><span class="mr-val" style="color:${co}">${s}</span></div><span class="mr-label">${d.short}</span></div>`;
   });
-  html += `</div>`;
-  
-  // Card 2: 15维细分
-  html += `<div class="analysis-card">
-    <div class="card-title"><span class="icon">🔬</span> 15维细分匹配</div>`;
-  DIMS.forEach((d, i) => {
-    const s = result.dimScores[i];
-    const cls = s >= 70 ? "high" : s >= 40 ? "mid" : "low";
-    html += `<div class="dim-row">
-      <div class="dim-label"><span>${d.name}</span><span>${s}%</span></div>
-      <div class="dim-bar-wrap"><div class="dim-bar ${cls}" style="--bar-w:${s}%"></div></div>
-    </div>`;
-  });
-  html += `</div>`;
-  
-  // Card 3: Strengths
-  const strengths = genStrengths(ta, tb, result.dimScores, result.modelScores);
-  html += `<div class="analysis-card">
-    <div class="card-title"><span class="icon">💎</span> 你们的优势</div>
-    <ul class="bullet-list">`;
-  strengths.forEach(s => { html += `<li><span class="bi">${s.icon}</span>${s.text}</li>`; });
-  html += `</ul></div>`;
-  
-  // Card 4: Challenges
-  const challenges = genChallenges(ta, tb, result.dimScores, result.modelScores);
-  html += `<div class="analysis-card">
-    <div class="card-title"><span class="icon">🔥</span> 可能的挑战</div>
-    <ul class="bullet-list">`;
-  challenges.forEach(s => { html += `<li><span class="bi">${s.icon}</span>${s.text}</li>`; });
-  html += `</ul></div>`;
-  
-  // Card 5: Advice
-  const advice = genAdvice(ta, tb, result.score, result.modelScores);
-  html += `<div class="tip-box">
-    <div class="tip-title">💡 相处建议</div>`;
-  advice.forEach(t => { html += `<p>• ${t}</p>`; });
-  html += `</div>`;
-  
-  // Keywords
-  const kws = genKeywords(ta, tb, result.score, result.modelScores);
-  html += `<div class="analysis-card" style="text-align:center">
-    <div class="card-title" style="justify-content:center"><span class="icon">🏷️</span> 配对标签</div>
-    <div class="tag-row" style="justify-content:center">`;
-  kws.forEach(k => { html += `<span class="tag ${k.c}">${k.t}</span>`; });
-  html += `</div></div>`;
-  
-  cardsEl.innerHTML = html;
-  
-  // Store for share
-  window._lastResult = { ta, tb, result, verdict, kws };
+  h+=`</div></div><div class="scroll-hint">👈 左右滑动查看全部</div></div>`;
+  // 5. strengths
+  const str=genStrengths(ta,tb,r.dimScores,r.modelScores);
+  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">💎</span> 你们的超能力</div><ul class="bullet-list">`;
+  str.forEach(s=>{h+=`<li><span class="bi">${s.icon}</span>${s.text}</li>`});h+=`</ul></div>`;
+  // 6. challenges
+  const ch=genChallenges(ta,tb,r.dimScores,r.modelScores);
+  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">🔥</span> 踩雷预警</div><ul class="bullet-list">`;
+  ch.forEach(s=>{h+=`<li><span class="bi">${s.icon}</span>${s.text}</li>`});h+=`</ul></div>`;
+  // 7. advice
+  const adv=genAdvice(ta,tb,r.score,r.modelScores);
+  h+=`<div class="tip-box"><div class="tip-title">💡 灵魂处方</div>`;
+  adv.forEach(t=>{h+=`<p>• ${t}</p>`});h+=`</div>`;
+  el.innerHTML=h;
+  window._lastResult={ta,tb,result:r,verdict:v,kws,rel,scenes,strengths:str,challenges:ch,advice:adv};
 }
 
-// ============ SHARE ============
-function showShare() {
-  if (!window._lastResult) return;
-  const { ta, tb, result, verdict, kws } = window._lastResult;
-  
-  document.getElementById("sEmojiA").textContent = ta.emoji;
-  document.getElementById("sEmojiB").textContent = tb.emoji;
-  document.getElementById("sNames").innerHTML = `${ta.code} <span style="color:var(--text2)">×</span> ${tb.code}`;
-  document.getElementById("sScore").textContent = result.score + "%";
-  document.getElementById("sVerdict").innerHTML = `${verdict.icon} ${verdict.text}`;
-  document.getElementById("sVerdict").style.color = verdict.color;
-  
-  // Dims
-  const models = ["自我","情感","态度","行动","社会"];
-  let dimHtml = "";
-  models.forEach(m => {
-    const s = result.modelScores[m];
-    dimHtml += `<div class="share-dim">
-      <span class="sdl">${m}</span>
-      <div class="sdb"><div class="sdb-fill" style="width:${s}%"></div></div>
-      <span class="sdv">${s}%</span>
-    </div>`;
-  });
-  document.getElementById("sDims").innerHTML = dimHtml;
-  
-  // Tags
-  let tagHtml = "";
-  kws.forEach(k => { tagHtml += `<span class="share-tag">${k.t}</span>`; });
-  document.getElementById("sTags").innerHTML = tagHtml;
-  
-  document.getElementById("shareOverlay").classList.add("show");
+// ============ SHARE (html2canvas → downloadable image) ============
+function showShare(){
+  if(!window._lastResult)return;
+  const{ta,tb,result:r,verdict:v,kws,rel,scenes,strengths,challenges,advice}=window._lastResult;
+
+  // generate QR code first
+  const qrEl=document.getElementById("qrTemp");
+  qrEl.innerHTML="";
+  new QRCode(qrEl,{text:"https://linceshao.github.io/sbti-match/",width:62,height:62,colorDark:"#1a1a3a",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
+
+  // wait for QR canvas to render, then build card
+  setTimeout(()=>{
+    const qrCanvas=qrEl.querySelector("canvas");
+    const qrDataUrl=qrCanvas?qrCanvas.toDataURL("image/png"):"";
+
+    const card=document.getElementById("shareCard");
+    let ch=`<div class="sc-brand">— SBTI 灵魂配对 —</div>`;
+    // VS header
+    ch+=`<div class="sc-vs"><div class="sc-av sc-av-a">${ta.emoji}</div><span style="font-size:16px">💕</span><div class="sc-av sc-av-b">${tb.emoji}</div></div>`;
+    ch+=`<div class="sc-names">${ta.code} ${ta.name} × ${tb.code} ${tb.name}</div>`;
+    ch+=`<div class="sc-score">${r.score}%</div>`;
+    ch+=`<div class="sc-verdict" style="color:${v.color}">${v.icon} ${v.text}</div>`;
+
+    // tags
+    ch+=`<div class="sc-tags">`;
+    kws.forEach(k=>{ch+=`<span class="sc-tag">${k.t}</span>`});
+    ch+=`</div>`;
+
+    // relationship type
+    ch+=`<div class="sc-section">`;
+    ch+=`<div class="sc-rel-type" style="color:${v.color}">「${rel.type}」</div>`;
+    ch+=`<div class="sc-rel-desc">${rel.desc}</div>`;
+    ch+=`</div>`;
+
+    // scenes
+    ch+=`<div class="sc-section"><div class="sc-section-title">🎬 真实场景预测</div>`;
+    scenes.forEach(sc=>{
+      const cls=sc.score>=70?"sc-ss-h":sc.score>=40?"sc-ss-m":"sc-ss-l";
+      const lb=sc.score>=70?"超搭":sc.score>=40?"还行":"刺激";
+      ch+=`<div class="sc-scene"><span class="sc-si">${sc.icon}</span><span class="sc-sn">${sc.title}</span><span class="sc-ss ${cls}">${lb} ${sc.score}%</span></div>`;
+    });
+    ch+=`</div>`;
+
+    // strengths
+    ch+=`<div class="sc-section"><div class="sc-section-title">💎 你们的超能力</div>`;
+    strengths.forEach(s=>{
+      ch+=`<div class="sc-bullet"><span class="sc-bi">${s.icon}</span><span>${s.text}</span></div>`;
+    });
+    ch+=`</div>`;
+
+    // challenges
+    ch+=`<div class="sc-section"><div class="sc-section-title">🔥 踩雷预警</div>`;
+    challenges.forEach(s=>{
+      ch+=`<div class="sc-bullet"><span class="sc-bi">${s.icon}</span><span>${s.text}</span></div>`;
+    });
+    ch+=`</div>`;
+
+    // advice
+    ch+=`<div class="sc-section"><div class="sc-section-title">💡 灵魂处方</div>`;
+    advice.forEach(t=>{
+      ch+=`<div class="sc-advice">• ${t}</div>`;
+    });
+    ch+=`</div>`;
+
+    // QR code + CTA bottom
+    ch+=`<div class="sc-bottom">`;
+    ch+=`<div class="sc-bottom-left"><div class="sc-cta">🔮 扫码测测你们有多合拍</div><div class="sc-slogan">纯属娱乐 · 认真你就输了</div></div>`;
+    if(qrDataUrl){
+      ch+=`<div class="sc-qr"><img src="${qrDataUrl}" /></div>`;
+    }
+    ch+=`</div>`;
+
+    card.innerHTML=ch;
+
+    // show overlay with loading
+    const inner=document.getElementById("shareInner");
+    inner.innerHTML=`<div class="share-generating">✨ 正在生成你的专属卡片...</div>`;
+    document.getElementById("shareOverlay").classList.add("show");
+
+    // render with html2canvas
+    setTimeout(()=>{
+      html2canvas(card,{backgroundColor:null,scale:2,useCORS:true,logging:false}).then(canvas=>{
+        const dataUrl=canvas.toDataURL("image/png");
+        inner.innerHTML=`
+          <div class="share-image-wrap"><img src="${dataUrl}" alt="SBTI配对卡片"/></div>
+          <div class="share-tip">📱 长按图片即可保存到相册</div>
+          <div class="share-actions">
+            <button class="share-close-btn" onclick="closeShare()">关闭</button>
+            <button class="share-save-btn" onclick="downloadCard()">💾 下载图片</button>
+          </div>`;
+        window._shareDataUrl=dataUrl;
+      }).catch(()=>{
+        inner.innerHTML=`<div class="share-generating">生成失败，请截图保存~</div><div class="share-actions"><button class="share-close-btn" onclick="closeShare()">关闭</button></div>`;
+      });
+    },300);
+  },200);
 }
 
-function closeShare(e) {
-  if (e.target === document.getElementById("shareOverlay") || e.target.classList.contains("close-share")) {
-    document.getElementById("shareOverlay").classList.remove("show");
-  }
+function downloadCard(){
+  if(!window._shareDataUrl)return;
+  const a=document.createElement("a");
+  a.href=window._shareDataUrl;
+  a.download=`SBTI配对_${window._lastResult.ta.code}_${window._lastResult.tb.code}.png`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 
-function goBack() {
+function closeShare(){document.getElementById("shareOverlay").classList.remove("show")}
+
+function goBack(){
   document.getElementById("resultPage").classList.remove("active");
   document.getElementById("introPage").classList.add("active");
-  window.scrollTo({top: 0, behavior: "smooth"});
-  // Reset score animation
-  const circle = document.getElementById("scoreCircle");
-  circle.style.animation = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// ============ INIT ============
-renderGrid("gridA", "A");
-renderGrid("gridB", "B");
+renderGrid("gridA","A");renderGrid("gridB","B");
 </script>
 </body>
 </html>
