@@ -37,6 +37,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 .type-btn .emoji{font-size:18px;display:block;margin-bottom:2px}
 .type-btn .code{font-weight:700;font-size:10px;color:var(--text);letter-spacing:.3px}
 .type-btn.selected-a{border-color:var(--accent);background:rgba(124,92,255,.12);color:var(--accent)}
+.result-rel-switch{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.rr-btn{padding:8px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.1);background:var(--card2);color:var(--text2);font-size:12px;cursor:pointer;transition:all .25s;white-space:nowrap}
+.rr-btn:active{transform:scale(.95)}
+.rr-btn.selected{border-color:var(--accent);background:rgba(124,92,255,.15);color:var(--accent);font-weight:700}
 .type-btn.selected-b{border-color:var(--accent3);background:rgba(0,212,170,.12);color:var(--accent3)}
 .type-btn.selected-a .code,.type-btn.selected-b .code{color:inherit}
 .type-btn .rarity{position:absolute;top:3px;right:3px;font-size:8px;padding:1px 4px;border-radius:4px;font-weight:700}
@@ -129,7 +133,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 .inv-code{font-size:18px;font-weight:800;color:var(--accent);position:relative}
 .inv-name{font-size:13px;color:var(--text2);margin-bottom:16px;position:relative}
 .inv-cta{font-size:15px;font-weight:700;color:var(--accent3);margin-bottom:16px;position:relative}
-.inv-qr{margin:0 auto 12px;position:relative}
+.inv-qr{margin:0 auto 12px;position:relative;display:flex;justify-content:center}
 .inv-brand{font-size:11px;color:var(--text2);opacity:.5;margin-top:8px;position:relative}
 .share-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:1000;justify-content:center;align-items:center;padding:20px;flex-direction:column;overflow-y:auto}
 .share-overlay.show{display:flex}
@@ -203,14 +207,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
       <input class="search-input" id="searchB" type="text" placeholder="🔍 搜代号或名字…" oninput="filterGrid('B')">
       <div class="type-grid" id="gridB"></div>
     </div>
-    <div class="rel-selector" id="relSelector">
-      <div class="label"><span class="dot" style="background:var(--accent3)"></span> 你们的关系是？</div>
-      <div class="rel-btns">
-        <button class="rel-btn selected" data-rel="lover" onclick="selectRel('lover')"><span class="rel-emoji">💕</span><span class="rel-label">恋人</span></button>
-        <button class="rel-btn" data-rel="friend" onclick="selectRel('friend')"><span class="rel-emoji">🍻</span><span class="rel-label">朋友</span></button>
-        <button class="rel-btn" data-rel="colleague" onclick="selectRel('colleague')"><span class="rel-emoji">💼</span><span class="rel-label">同事</span></button>
-      </div>
-    </div>
+    <!-- 关系选择移到结果页 -->
     <div class="vs-display" id="vsDisplay" style="display:none">
       <div><div class="vs-avatar vs-avatar-a" id="vsEmojiA"></div><div class="vs-info"><span class="code" id="vsCodeA"></span></div></div>
       <div class="vs-heart" id="vsHeart">💕</div>
@@ -238,6 +235,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
       </div>
       <div class="match-verdict" id="verdict"></div>
       <div class="match-tagline" id="tagline"></div>
+      <div class="result-rel-switch" id="resultRelSwitch">
+        <button class="rr-btn selected" data-rel="lover" onclick="switchRel('lover')">💕 恋人</button>
+        <button class="rr-btn" data-rel="friend" onclick="switchRel('friend')">🍻 朋友</button>
+        <button class="rr-btn" data-rel="colleague" onclick="switchRel('colleague')">💼 同事</button>
+        <button class="rr-btn" data-rel="family" onclick="switchRel('family')">🏠 亲人</button>
+      </div>
     </div>
     <div id="analysisCards"></div>
     <div class="action-row">
@@ -302,7 +305,7 @@ const DIMS=[
 {name:"社交主动性",short:"社交"},{name:"人际边界",short:"人际"},{name:"表达与真实",short:"真实"},
 ];
 const MN=["自我","情感","态度","行动","社会"];
-const REL_META={lover:{icon:"💕",label:"恋人",verb:"配对"},friend:{icon:"🍻",label:"朋友",verb:"友谊诊断"},colleague:{icon:"💼",label:"同事",verb:"职场透视"}};
+const REL_META={lover:{icon:"💕",label:"恋人",verb:"配对"},friend:{icon:"🍻",label:"朋友",verb:"友谊诊断"},colleague:{icon:"💼",label:"同事",verb:"职场透视"},family:{icon:"🏠",label:"亲人",verb:"亲密诊断"}};
 let selA=null,selB=null,selRel="lover";
 
 // sorted index by code alphabetically
@@ -325,19 +328,20 @@ function filterGrid(side){
 }
 function selectType(side,idx){
   if(side==="A"){selA=idx;document.querySelectorAll("#gridA .type-btn").forEach(b=>b.classList.remove("selected-a"));document.querySelector(`#gridA .type-btn[data-idx="${idx}"]`).classList.add("selected-a");document.getElementById("quickInvite").style.display="block";setTimeout(()=>document.getElementById("panelB").scrollIntoView({behavior:"smooth",block:"start"}),200)}
-  else{selB=idx;document.querySelectorAll("#gridB .type-btn").forEach(b=>b.classList.remove("selected-b"));document.querySelector(`#gridB .type-btn[data-idx="${idx}"]`).classList.add("selected-b");setTimeout(()=>document.getElementById("relSelector").scrollIntoView({behavior:"smooth",block:"start"}),200)}
+  else{selB=idx;document.querySelectorAll("#gridB .type-btn").forEach(b=>b.classList.remove("selected-b"));document.querySelector(`#gridB .type-btn[data-idx="${idx}"]`).classList.add("selected-b");setTimeout(()=>document.getElementById("vsDisplay").scrollIntoView({behavior:"smooth",block:"start"}),200)}
   updateVs();
 }
 function updateVs(){
   const vs=document.getElementById("vsDisplay"),btn=document.getElementById("matchBtn");
-  const rm=REL_META[selRel];
-  if(selA!==null&&selB!==null){vs.style.display="flex";document.getElementById("vsEmojiA").textContent=TYPES[selA].emoji;document.getElementById("vsCodeA").textContent=TYPES[selA].code;document.getElementById("vsEmojiB").textContent=TYPES[selB].emoji;document.getElementById("vsCodeB").textContent=TYPES[selB].code;document.getElementById("vsHeart").textContent=rm.icon;btn.disabled=false;btn.textContent=`🔮 开始${rm.verb}`}
-  else{vs.style.display="none";btn.disabled=true;btn.textContent=`🔮 开始${rm.verb}`}
+  const rm=REL_META["lover"];
+  if(selA!==null&&selB!==null){vs.style.display="flex";document.getElementById("vsEmojiA").textContent=TYPES[selA].emoji;document.getElementById("vsCodeA").textContent=TYPES[selA].code;document.getElementById("vsEmojiB").textContent=TYPES[selB].emoji;document.getElementById("vsCodeB").textContent=TYPES[selB].code;document.getElementById("vsHeart").textContent=rm.icon;btn.disabled=false;btn.textContent=`🔮 开始配对`}
+  else{vs.style.display="none";btn.disabled=true;btn.textContent=`🔮 开始配对`}
 }
 function selectRel(rel){
   selRel=rel;
   document.querySelectorAll(".rel-btn").forEach(b=>b.classList.remove("selected"));
-  document.querySelector(`.rel-btn[data-rel="${rel}"]`).classList.add("selected");
+  const el=document.querySelector(`.rel-btn[data-rel="${rel}"]`);
+  if(el)el.classList.add("selected");
   updateVs();
 }
 function calcMatch(a,b){
@@ -371,6 +375,12 @@ function genTagline(ta,tb,s,rl){
     const h=[`${ta.name}×${tb.name}，你们是老板最怕的组合——效率高到显得别人在摸鱼`,`这个工位CP感，HR看了都想发奖金`,`职场最强搭档已锁定，其他人别争了`];
     const m=[`${ta.name}碰上${tb.name}，会议室里的火药味和默契一样浓`,`你们之间的职场关系叫：表面客气，暗中较劲，但关键时刻永远站一边`,`不是同一类人，但项目deadline面前谁都不会掉链子`];
     const l=[`${ta.name}+${tb.name}同组？项目经理看了可能会申请调岗`,`你们的协作风格像异地恋——全靠文字沟通，全靠脑补理解`,`别人的同事是战友，你们是……平行宇宙里的同一个工位`];
+    const a=s>=70?h:s>=45?m:l;return a[Math.floor(Math.random()*a.length)];
+  }
+  if(rl==="family"){
+    const h=[`${ta.name}×${tb.name}，别人家的亲人是"血缘关系"，你们是"灵魂关系"`,`这种默契只有过年不用假笑的家人才有`,`基因都没你们灵魂像——是亲的没错了`];
+    const m=[`${ta.name}碰上${tb.name}，年夜饭上嘴硬心软的典型画面`,`你们的相处模式：嘴上嫌弃到极致，行动宠到没底线`,`打也打不散骂也骂不走——因为是家人啊`];
+    const l=[`${ta.name}+${tb.name}住一个屋檐下？家庭群的战火从不熄灭`,`你们的亲情像辣椒——呛人，但离不开`,`别人的家人是港湾，你们的是竞技场——但奖杯是爱`];
     const a=s>=70?h:s>=45?m:l;return a[Math.floor(Math.random()*a.length)];
   }
   const h=[`${ta.name}×${tb.name}，你们之间的默契让算法都觉得自己多余`,`你们不是合拍，是灵魂出厂就焊一起了`,`这个匹配度我见过，上一次是在小说里`];
@@ -428,6 +438,30 @@ function getRelType(ta,tb,s,ms,rl){
     return pick([
       {type:`跨服组队体`,desc:`${ta.name}和${tb.name}被分到同一组，像是游戏里的随机匹配——系统也不知道为什么把你俩放一起。你们的思维方式、做事节奏、甚至对"好的产出"的定义都完全不同。协作过程大概率伴随着大量的"你是认真的吗"和"这也行？"。但如果项目最终交付了——那个成果里会有你们任何一方单独都做不出的东西。`},
       {type:`灾难片剧组`,desc:`把你们放一个项目组需要PM有强大的心理素质。不是能力问题——是你们的工作方式差异大到每次协作都像一场小型文化冲突。但有个反直觉的真相：最有创新性的产出往往就出自这种"完全不搭"的组合。别人出的是标准答案，你们出的是出其不意。前提是，得先活过磨合期。`}
+    ]);
+  }
+
+  // ========= 亲人 =========
+  if(rl==="family"){
+    if(ta.code===tb.code)return pick([
+      {type:`基因复制型亲人`,desc:`两个${ta.name}住一个屋檐下，就是照镜子照到烦。你气ta的每一个毛病，都是你自己身上有的。年夜饭上你们可以因为同一件事同时炸毛——然后互不说话——然后其中一个默默端了碗汤过来。这种血缘自带的"气死了但不能真的不要ta"的设定，是全宇宙最bug的情感绑定。`},
+      {type:`镜像血脉体`,desc:`你们像极了——表达方式、脾气点、甚至犯倔的姿势都一模一样。这导致你们吵架的时候谁也不服谁，冷战的时候两个人都在等对方先开口。但某天真出了事，你们冲过去的速度会让旁人以为你们从来没吵过。`}
+    ]);
+    if(s>=80)return pick([
+      {type:`灵魂血亲`,desc:`${ta.name}和${tb.name}之间的默契，不是"经常联系"练出来的——是一个人沉默的时候另一个就知道今天不太对劲。在「${best}」上你们有一种无需确认的信任：不是"我相信你"，是"压根没想过要怀疑"。这种亲人关系是别人羡慕不来的——因为这不是经营出来的，是长出来的。`},
+      {type:`天选家人组`,desc:`家人里能碰到一个真正懂你的人，概率比中彩票还低。你们之间的默契不靠解释——一个眼神、一声语气的变化、甚至一条回复的速度，都能传递比文字多十倍的信息。最珍贵的不是你们有多像，是"即使不像，也从来没想过要改变对方"。`}
+    ]);
+    if(s>=60)return pick([
+      {type:`嘴硬心软型`,desc:`${ta.name}和${tb.name}的亲情画风大概是：当面一句好话不说，背后夸对方的时候停不下来。在「${best}」上有家人才有的默契——不用说"谢谢"和"对不起"，因为那些都被日常的行动代替了。你们的相处不浪漫也不温馨，但就是有一种"删不掉"的踏实感。`},
+      {type:`吵架进化体`,desc:`你们的家族群聊天记录大概率充满了表情包大战和隔空互怼。${ta.name}觉得${tb.name}固执得要命，${tb.name}觉得${ta.name}不可理喻。但过年聚在一起，你们一定是坐最近的那两个。吵归吵，碗筷永远是你们一起收的。`}
+    ]);
+    if(s>=40)return pick([
+      {type:`代沟桥梁型`,desc:`${ta.name}和${tb.name}之间有一道天然的理解屏障——不是不爱，是真的"听不懂对方在说什么"。在「${worst}」上的差距大到让你们双方都觉得"这个人到底怎么想的"。但家人最神奇的地方是：即使完全不理解，也会默默站在你这边。不需要懂，只需要在。`},
+      {type:`反差萌血脉`,desc:`你们的思维方式相差十万八千里，导致家庭饭桌上的"聊天"经常变成"辩论"。但也正是这种差异，让你们的家庭有一种奇特的活力——永远不会冷场，永远有新话题（虽然大部分话题以"我不是这个意思"结尾）。`}
+    ]);
+    return pick([
+      {type:`平行血脉体`,desc:`${ta.name}和${tb.name}虽然是一家人，但你们的灵魂像来自不同星系。日常对话经常陷入"你说的每个字我都听懂了但连在一起是什么意思"的困境。但家人就是这样——不需要理解，不需要认同，甚至不需要经常联系。知道对方在就够了。这种"存在感大于理解"的关系，是除了家人以外任何关系都给不了的。`},
+      {type:`薛定谔的亲情`,desc:`你们的关系处于一种叠加态——平时觉得有没有对方都行，但真到了某个关键时刻，那种"血浓于水"的力量会把你拉回来。${ta.name}和${tb.name}的差异不是问题，因为家人之间的连接从来不是靠"合得来"维持的——是靠"反正也跑不掉"。听着无奈，但这恰恰是最真实也最结实的纽带。`}
     ]);
   }
 
@@ -552,6 +586,46 @@ function genScenes(ta,tb,s,ms,ds,rl){
     return scenes;
   }
 
+  // ========= 亲人场景 =========
+  if(rl==="family"){
+    const ts=Math.round(ms["行动"]*.3+ms["态度"]*.3+ms["情感"]*.4);
+    const tt={
+      h:`过年回家你们自动进入"默契模式"——谁刷碗谁拖地不用分配，流程比上班还丝滑。聊天也不需要铺垫，直接进入正题。旁边亲戚觉得你们太冷淡了，但你们心里都清楚：不寒暄就是最高级的亲近。`,
+      m:`团聚时你们一半时间和谐一半时间冒火。可能因为一道菜的做法吵半小时，然后又一起窝沙发上刷手机各看各的，互不打扰但莫名安心。你们的亲情不是"粘在一起"那种，是"同一个空间里各自舒服"。`,
+      l:`过年聚餐对你们来说更像一场社交任务。话题总是在"工作怎么样""有对象了吗"的表面打转。不是不想深聊，是你们习惯性地把真心话藏在日常行动里——一杯倒好的水、一个顺手买的零食，比说一百句"我爱你"都管用。`
+    };
+    scenes.push({icon:"🏠",title:"过年团聚",score:ts,text:tt[ts>=70?"h":ts>=40?"m":"l"]});
+    const cs=Math.round(ms["情感"]*.5+ms["自我"]*.3+ms["社会"]*.2);
+    const ct={
+      h:`你们吵架的结局永远是：吵完→冷战半小时→其中一个端了碗汤过来→装作什么都没发生。最高级的和解从来不需要"对不起"三个字。你们早就过了需要道歉的阶段——因为都知道，比起"谁对谁错"，"一起好好吃饭"才是正事。`,
+      m:`你们的矛盾模式是：一方说了重话→另一方回怼→冷战→第三方（通常是另一个家庭成员）被迫调解→各退一步→当天晚上假装什么都没发生地一起看电视。流程标准到可以写SOP，但每次经历一轮都会比上次更了解对方的底线在哪。`,
+      l:`你们之间的冲突不是"吵完就好"那种——是那种能冷战好几天、谁都不肯先开口的类型。不是不在乎，恰恰是太在乎了才觉得"凭什么是我先低头"。建议：下次吵完，谁先想到对方谁就先发消息。不丢人的，ta也在等。`
+    };
+    scenes.push({icon:"💥",title:"家庭矛盾",score:cs,text:ct[cs>=70?"h":cs>=40?"m":"l"]});
+    const ns=Math.round(ms["情感"]*.6+ms["自我"]*.4);
+    const nt={
+      h:`你们之间有一种不需要说"最近怎么样"就能感知到对方状态的能力。有时候一通电话，对方只是说"没什么事就是打给你"——你就知道ta今天不太好。这种不用开口就被接住的感觉，是只有真正亲近的家人才能给的。`,
+      m:`你们不太会直接说"我想你了"或者"你还好吗"——太肉麻了。但会用各种方式拐弯抹角地表达：转发一个养生链接、问"你那边冷不冷"、突然寄一箱水果过来。翻译过来都是同一句话：我记得你。`,
+      l:`深度交流对你们来说有点难——不是不想，是不知道怎么开口。习惯了用"嗯""知道了""你自己看着办"来回应一切。但其实你们心里装着对方，只是那些话永远堵在嘴边说不出来。试试用行动代替：做一顿饭、接一次机，比任何对话都管用。`
+    };
+    scenes.push({icon:"💬",title:"深度交流",score:ns,text:nt[ns>=70?"h":ns>=40?"m":"l"]});
+    const ms2=Math.round(ms["态度"]*.5+ms["行动"]*.3+ms["自我"]*.2);
+    const mt={
+      h:`你们对花钱的态度出奇地一致——要么都节俭到感动，要么都大方到心疼。家庭财务从不需要"谈"，因为你们自动就在同一个频道上。过年包红包的金额都能不约而同——这种默契比什么理财规划都靠谱。`,
+      m:`你们对钱的态度有分歧但不至于撕破脸。一个觉得该省的省，一个觉得该花就花。偶尔因为某笔开销互相叨叨两句，但不会真的计较。家人之间谈钱不伤感情——前提是别太频繁。`,
+      l:`你们在钱上的观念差距可能是家庭矛盾的主要来源之一。一方觉得对方"太抠"，另一方觉得对方"太败家"。建议：设定各自的底线，底线以内不干涉。家人之间最好的财务关系是"我知道你怎么花钱，我不认同但我不管"。`
+    };
+    scenes.push({icon:"💰",title:"家庭经济观",score:ms2,text:mt[ms2>=70?"h":ms2>=40?"m":"l"]});
+    const ss=Math.round(ms["社会"]*.5+ms["态度"]*.3+ms["情感"]*.2);
+    const st={
+      h:`你们在外人面前是"别人家的家庭"——和谐到让人嫉妒。不是演出来的，是你们真的找到了一种让彼此都舒服的相处模式。最难得的是：你们在外面不会互相拆台，回到家也不会变脸。表里如一的亲人关系，稀有度堪比SSR。`,
+      m:`你们在外面是"正常家庭"的样子——不过分亲热也不过分冷淡。但关起门来画风可能完全不同：互怼、抢遥控器、因为小事碎碎念。旁人看到的是"还行吧"，只有你们自己知道那些鸡飞狗跳里藏着多少真感情。`,
+      l:`你们在外人面前的互动可能让旁观者感到一点"冷"——不是不亲，是你们习惯了把感情藏起来。回到家也是各忙各的，共处一室却像两个独立的宇宙。但真出事的时候，你们会发现"那个宇宙"一直在旁边等着。`
+    };
+    scenes.push({icon:"👨‍👩‍👧",title:"日常相处",score:ss,text:st[ss>=70?"h":ss>=40?"m":"l"]});
+    return scenes;
+  }
+
   // ========= 恋人场景（保留原有） =========
   const ts=Math.round(ms["行动"]*.4+ms["态度"]*.3+ms["社会"]*.3);
   const tt={
@@ -619,8 +693,18 @@ function genStrengths(ta,tb,ds,ms,rl){
     return items.slice(0,4);
   }
 
+  if(rl==="family"){
+    if(ms[best]>=70)items.push({icon:"🎯",text:`在「${best}」上你们的频率天然同步（${ms[best]}%）。不需要"好好谈谈"——日常的一个动作、一句随口的话里就藏着全部的理解`});
+    const hd=ds.map((s,i)=>({s,i})).filter(x=>x.s>=80).sort((a,b)=>b.s-a.s);
+    if(hd.length>=2)items.push({icon:"💎",text:`在${hd.slice(0,3).map(x=>DIMS[x.i].short).join("、")}上同时超过80%——血缘里带来的默契不需要培养，你们从小就在一个频道上`});
+    const cd=[];for(let i=0;i<15;i++)if((ta.vec[i]===0&&tb.vec[i]===2)||(ta.vec[i]===2&&tb.vec[i]===0))cd.push(DIMS[i].short);
+    if(cd.length>0)items.push({icon:"🧩",text:`${cd.slice(0,2).join("和")}上你们完全相反——但这恰好让你们的家庭更完整。一个人想不到的，另一个人替你想到了。这种互补比"想法一致"有用一万倍`});
+    if(ms["情感"]>=60)items.push({icon:"💗",text:`情感层面的默契到了${ms["情感"]}%——ta不说你也知道ta最近压力大，你不哭ta也知道你不开心。家人之间这种不需要语言的心照不宣，是世界上最温暖的超能力`});
+    if(!items.length)items.push({icon:"🌈",text:`你们最大的超能力是"不管怎样都跑不掉"——听着像诅咒，其实是祝福。正因为知道对方不会走，你们才敢在彼此面前展示最真实（也最难看）的自己`});
+    return items.slice(0,4);
+  }
+
   // 恋人（保留原有）
-  if(ms[best]>=70)items.push({icon:"🎯",text:`在「${best}」上你们的默契已经不需要语言了（${ms[best]}%）。不是"想法一样"这种表面同步——是ta皱一下眉你就知道该递水还是该闭嘴。这种直觉级别的理解，多数人一辈子遇不到一次`});
   const hd=ds.map((s,i)=>({s,i})).filter(x=>x.s>=80).sort((a,b)=>b.s-a.s);
   if(hd.length>=2)items.push({icon:"💎",text:`在${hd.slice(0,3).map(x=>DIMS[x.i].short).join("、")}上同时超过80%——这不是巧合，这是你们的底层操作系统长得就像。别人需要磨合三年的东西，你们进门就自带`});
   const cd=[];for(let i=0;i<15;i++)if((ta.vec[i]===0&&tb.vec[i]===2)||(ta.vec[i]===2&&tb.vec[i]===0))cd.push(DIMS[i].short);
@@ -652,8 +736,16 @@ function genChallenges(ta,tb,ds,ms,rl){
     return items.slice(0,3);
   }
 
+  if(rl==="family"){
+    if(ms[worst]<40)items.push({icon:"💀",text:`「${worst}」只有${ms[worst]}%——你们在这个维度上完全说不到一块去。平时可以装看不见，但过年聚在一起超过三天，这条裂缝会准时出现。不是谁的错，是你们看世界的角度在这件事上天然就不同`});
+    const ld=ds.map((s,i)=>({s,i})).filter(x=>x.s<=30).sort((a,b)=>a.s-b.s);
+    if(ld.length>0)items.push({icon:"⚠️",text:`「${DIMS[ld[0].i].name}」是你们家庭关系里最深的暗礁。那些"怎么又吵起来了"的瞬间，十有八九跟这个有关。不是谁不讲理——是你们在这个点上真的在用两种语言说话`});
+    if(ms["情感"]<40)items.push({icon:"💔",text:`你以为说了很多了，ta觉得你什么都没说。你以为自己够关心了，ta觉得你只是在走流程。家人之间最痛的误解不是不爱——是爱的方式对方完全感受不到。试着用ta的方式去表达，而不是用你习惯的方式`});
+    if(!items.length)items.push({icon:"😤",text:`你们最大的隐患是"因为是家人所以不需要经营"。恰恰相反——越亲近的人越容易互相伤害，因为知道对方不会走。但"不会走"不等于"不会痛"。偶尔的一句好话，比你想象的重要一百倍`});
+    return items.slice(0,3);
+  }
+
   // 恋人（保留原有）
-  if(ms[worst]<40)items.push({icon:"💀",text:`「${worst}」只有${ms[worst]}%——不是小分歧，是你们在这个维度上像用不同的操作系统。一方觉得天经地义的事，另一方需要从头解释。最让人崩溃的不是对方"做错了"，是你根本不理解ta为什么会那样做，而ta也完全困惑于你为什么会生气`});
   const ld=ds.map((s,i)=>({s,i})).filter(x=>x.s<=30).sort((a,b)=>a.s-b.s);
   if(ld.length>0){
     const dimName=DIMS[ld[0].i].name;
@@ -698,6 +790,21 @@ function genAdvice(ta,tb,s,ms,rl){
     return t;
   }
 
+  if(rl==="family"){
+    if(s>=70){
+      t.push(`你们的亲情基础很稳了，但别因此就"省略"表达。家人之间最大的遗憾不是吵架，是"我以为ta知道我在乎"。偶尔说一句"谢谢你"或者"你辛苦了"——不是矫情，是在给这段关系浇水`);
+      t.push(`找一件可以一起做的事——不是义务性的聚餐，是真正"想一起做"的事。一起旅行、一起学个新东西、甚至一起追个剧。共同的新体验能让你们发现：原来家人也有你没见过的一面`);
+    }else if(s>=45){
+      t.push(`你们之间的很多矛盾不是"不爱"，是"爱的语言不同"。一方用行动表达，另一方需要语言确认——两边都在付出，但两边都觉得"ta不在乎"。试着用对方的方式去爱，而不是只用自己的`);
+      t.push(`吵完架别冷处理。家人之间的冷战不像朋友——朋友可以不联系，家人冷战就是在同一个屋子里当透明人，比任何争吵都伤人。谁先开口谁赢了，真的`);
+      if(ms[worst]<40)t.push(`在「${worst}」上你们差很远。家庭矛盾的80%来源于此。不用改变谁，但要知道：每次莫名其妙的生气，先想想是不是这个维度在作怪`);
+    }else{
+      t.push(`你们的家庭关系需要一个"缓冲区"——不是每件事都要面对面掰扯清楚。有些事发条消息比当面说效果好一万倍，因为文字给了双方冷静思考的空间`);
+      t.push(`接受一个现实：家人不一定要"互相理解"。你不需要懂ta为什么那样想，ta也不需要理解你的选择。但你们可以做到"不理解但不干涉"——这在家庭里已经是最高级的尊重了`);
+    }
+    return t;
+  }
+
   // 恋人（保留原有）
   if(s>=70){
     t.push(`你们现在最大的风险不是不合——是太合了以至于开始偷懒。"ta应该懂我"这六个字杀死的关系比任何吵架都多。默契不是不沟通的理由，偶尔把那些"你应该知道"的话说出来——你会发现即使ta真的知道，听你亲口说的时候眼睛还是会亮`);
@@ -738,6 +845,18 @@ function genKeywords(ta,tb,s,ms,rl){
     if(s<40)k.push({t:"开会想打人",c:"warn"});
     if(s<30)k.push({t:"PM要崩溃",c:"warn"});
     if(ta.code===tb.code)k.push({t:"同款工位",c:"gold"});
+  }else if(rl==="family"){
+    if(s>=85)k.push({t:"灵魂血亲",c:"gold"});else if(s>=70)k.push({t:"天选家人",c:""});
+    if(s>=60)k.push({t:"嘴硬心软",c:"warm"});
+    if(ms["情感"]>=70)k.push({t:"心有灵犀",c:"warm"});
+    if(ms["自我"]>=70)k.push({t:"三观同根",c:"green"});
+    if(ms["行动"]>=70)k.push({t:"默契配合",c:""});
+    if(ms["社会"]>=70)k.push({t:"家族和谐",c:"green"});
+    let cc=0;for(let i=0;i<15;i++)if(Math.abs(ta.vec[i]-tb.vec[i])===2)cc++;
+    if(cc>=3)k.push({t:"反差互补",c:"gold"});
+    if(s<40)k.push({t:"过年要吵架",c:"warn"});
+    if(s<30)k.push({t:"家庭群退群",c:"warn"});
+    if(ta.code===tb.code)k.push({t:"基因复制体",c:"gold"});
   }else{
     if(s>=85)k.push({t:"灵魂出厂配对",c:"gold"});else if(s>=70)k.push({t:"精神Wi-Fi",c:""});
     if(s>=60)k.push({t:"有CP感了",c:"warm"});
@@ -758,9 +877,10 @@ function genKeywords(ta,tb,s,ms,rl){
 }
 
 // ============ DO MATCH ============
-function doMatch(){
+function doMatch(overrideRl){
   if(selA===null||selB===null)return;
-  const ta=TYPES[selA],tb=TYPES[selB],r=calcMatch(selA,selB),v=getVerdict(r.score),rl=selRel,rm=REL_META[rl];
+  const ta=TYPES[selA],tb=TYPES[selB],r=calcMatch(selA,selB),v=getVerdict(r.score),rl=overrideRl||selRel,rm=REL_META[rl];
+  selRel=rl;
   document.getElementById("introPage").classList.remove("active");
   document.getElementById("resultPage").classList.add("active");
   window.scrollTo({top:0,behavior:"smooth"});
@@ -769,6 +889,10 @@ function doMatch(){
   document.getElementById("rEmojiB").textContent=tb.emoji;
   document.getElementById("rCodeB").textContent=`${tb.code} ${tb.name}`;
   document.getElementById("rHeart").textContent=rm.icon;
+  // update rel switch buttons
+  document.querySelectorAll(".rr-btn").forEach(b=>b.classList.remove("selected"));
+  const rrEl=document.querySelector(`.rr-btn[data-rel="${rl}"]`);
+  if(rrEl)rrEl.classList.add("selected");
   // ring
   const circ=2*Math.PI*70,off=circ*(1-r.score/100),c=document.getElementById("scoreCircle");
   c.style.strokeDasharray=circ;c.style.strokeDashoffset=circ;c.style.transition="none";
@@ -785,7 +909,7 @@ function doMatch(){
   const el=document.getElementById("analysisCards");let h="";
   // 1. tags first
   const kws=genKeywords(ta,tb,r.score,r.modelScores,rl);
-  h+=`<div class="analysis-card" style="text-align:center"><div class="card-title" style="justify-content:center"><span class="icon">🏷️</span> ${rl==="colleague"?"职场属性":rl==="friend"?"友谊属性":"配对属性"}</div><div class="tag-row" style="justify-content:center">`;
+  h+=`<div class="analysis-card" style="text-align:center"><div class="card-title" style="justify-content:center"><span class="icon">🏷️</span> ${rl==="colleague"?"职场属性":rl==="friend"?"友谊属性":rl==="family"?"亲情属性":"配对属性"}</div><div class="tag-row" style="justify-content:center">`;
   kws.forEach(k=>{h+=`<span class="tag ${k.c}">${k.t}</span>`});h+=`</div></div>`;
   // 2. relationship type
   const rel=getRelType(ta,tb,r.score,r.modelScores,rl);
@@ -793,7 +917,7 @@ function doMatch(){
   // 3. scenes
   const scenes=genScenes(ta,tb,r.score,r.modelScores,r.dimScores,rl);
   scenes.sort((a,b)=>Math.abs(b.score-50)-Math.abs(a.score-50));
-  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">🎬</span> ${rl==="colleague"?"职场名场面":rl==="friend"?"友谊名场面":"真实场景预测"}</div>`;
+  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">🎬</span> ${rl==="colleague"?"职场名场面":rl==="friend"?"友谊名场面":rl==="family"?"家庭名场面":"真实场景预测"}</div>`;
   scenes.forEach(sc=>{const cls=sc.score>=70?"ss-high":sc.score>=40?"ss-mid":"ss-low";const lb=sc.score>=70?"超搭":sc.score>=40?"还行":"刺激";
     h+=`<div class="scene-item"><div class="scene-head"><span class="si">${sc.icon}</span>${sc.title}<span class="scene-score ${cls}">${lb} ${sc.score}%</span></div><div class="scene-body">${sc.text}</div></div>`});
   h+=`</div>`;
@@ -807,18 +931,27 @@ function doMatch(){
   h+=`</div></div><div class="scroll-hint">👈 左右滑动查看全部</div></div>`;
   // 5. strengths
   const str=genStrengths(ta,tb,r.dimScores,r.modelScores,rl);
-  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">💎</span> ${rl==="colleague"?"职场超能力":rl==="friend"?"友谊超能力":"你们的超能力"}</div><ul class="bullet-list">`;
+  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">💎</span> ${rl==="colleague"?"职场超能力":rl==="friend"?"友谊超能力":rl==="family"?"家庭超能力":"你们的超能力"}</div><ul class="bullet-list">`;
   str.forEach(s=>{h+=`<li><span class="bi">${s.icon}</span>${s.text}</li>`});h+=`</ul></div>`;
   // 6. challenges
   const ch=genChallenges(ta,tb,r.dimScores,r.modelScores,rl);
-  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">🔥</span> ${rl==="colleague"?"职场雷区":rl==="friend"?"友谊雷区":"踩雷预警"}</div><ul class="bullet-list">`;
+  h+=`<div class="analysis-card"><div class="card-title"><span class="icon">🔥</span> ${rl==="colleague"?"职场雷区":rl==="friend"?"友谊雷区":rl==="family"?"家庭雷区":"踩雷预警"}</div><ul class="bullet-list">`;
   ch.forEach(s=>{h+=`<li><span class="bi">${s.icon}</span>${s.text}</li>`});h+=`</ul></div>`;
   // 7. advice
   const adv=genAdvice(ta,tb,r.score,r.modelScores,rl);
-  h+=`<div class="tip-box"><div class="tip-title">💡 ${rl==="colleague"?"职场锦囊":rl==="friend"?"友谊锦囊":"灵魂处方"}</div>`;
+  h+=`<div class="tip-box"><div class="tip-title">💡 ${rl==="colleague"?"职场锦囊":rl==="friend"?"友谊锦囊":rl==="family"?"家庭锦囊":"灵魂处方"}</div>`;
   adv.forEach(t=>{h+=`<p>• ${t}</p>`});h+=`</div>`;
   el.innerHTML=h;
   window._lastResult={ta,tb,result:r,verdict:v,kws,rel,scenes,strengths:str,challenges:ch,advice:adv,relType:rl};
+}
+
+function switchRel(newRl){
+  if(selA===null||selB===null)return;
+  // re-render with new relationship type, keep scroll position
+  const scrollY=window.scrollY;
+  doMatch(newRl);
+  // smooth scroll to analysis area (skip re-scrolling to top)
+  requestAnimationFrame(()=>window.scrollTo({top:0,behavior:"smooth"}));
 }
 
 // ============ SHARE (html2canvas → downloadable image) ============
@@ -838,7 +971,7 @@ function showShare(){
 
     const card=document.getElementById("shareCard");
     const rm=REL_META[rl||"lover"];
-    let ch=`<div class="sc-brand">— SBTI ${rl==="colleague"?"职场透视":rl==="friend"?"友谊诊断":"灵魂配对"} —</div>`;
+    let ch=`<div class="sc-brand">— SBTI ${rl==="colleague"?"职场透视":rl==="friend"?"友谊诊断":rl==="family"?"亲密诊断":"灵魂配对"} —</div>`;
     // VS header
     ch+=`<div class="sc-vs"><div class="sc-av sc-av-a">${ta.emoji}</div><span style="font-size:16px">${rm.icon}</span><div class="sc-av sc-av-b">${tb.emoji}</div></div>`;
     ch+=`<div class="sc-names">${ta.code} ${ta.name} × ${tb.code} ${tb.name}</div>`;
@@ -888,7 +1021,7 @@ function showShare(){
 
     // QR code + CTA bottom
     ch+=`<div class="sc-bottom">`;
-    ch+=`<div class="sc-bottom-left"><div class="sc-cta">🔮 扫码测测你们有多${rl==="colleague"?"搭":rl==="friend"?"铁":"合拍"}</div><div class="sc-slogan">纯属娱乐 · 认真你就输了</div></div>`;
+    ch+=`<div class="sc-bottom-left"><div class="sc-cta">🔮 扫码测测你们有多${rl==="colleague"?"搭":rl==="friend"?"铁":rl==="family"?"亲":"合拍"}</div><div class="sc-slogan">纯属娱乐 · 认真你就输了</div></div>`;
     if(qrDataUrl){
       ch+=`<div class="sc-qr"><img src="${qrDataUrl}" /></div>`;
     }
@@ -926,7 +1059,7 @@ function downloadCard(){
   if(!window._shareDataUrl)return;
   const a=document.createElement("a");
   a.href=window._shareDataUrl;
-  const rlLabel=window._lastResult.relType==="colleague"?"同事":window._lastResult.relType==="friend"?"朋友":"配对";
+  const rlLabel=window._lastResult.relType==="colleague"?"同事":window._lastResult.relType==="friend"?"朋友":window._lastResult.relType==="family"?"亲人":"配对";
   a.download=`SBTI${rlLabel}_${window._lastResult.ta.code}_${window._lastResult.tb.code}.png`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
