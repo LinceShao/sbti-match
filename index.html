@@ -74,6 +74,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 .level-sub{font-size:14px;color:var(--text2);margin-top:6px;letter-spacing:1px}
 .match-verdict{font-size:18px;font-weight:700;text-align:center;margin-bottom:6px;margin-top:12px}
 .match-tagline{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px}
+.beat-line{font-size:13px;color:var(--text2);margin-top:10px;text-align:center;opacity:.85;letter-spacing:.5px}
+.beat-line .beat-num{font-weight:800;font-size:16px;margin:0 2px}
 .analysis-card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:14px;border:1px solid rgba(255,255,255,.06);animation:fadeUp .5s ease both}
 .card-title{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .card-title .icon{font-size:18px}
@@ -274,9 +276,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
       <div class="level-display">
         <span class="level-emoji" id="levelEmoji"></span>
         <div class="level-text" id="levelText"></div>
-        <div class="level-sub" id="levelSub"></div>
-      </div>
-      <div class="match-verdict" id="verdict"></div>
+      <div class="level-sub" id="levelSub"></div>
+      <div class="beat-line" id="beatLine"></div>
+    </div>
+    <div class="match-verdict" id="verdict"></div>
       <div class="match-tagline" id="tagline"></div>
       <div class="result-rel-switch" id="resultRelSwitch">
         <button class="rr-btn selected" data-rel="lover" onclick="switchRel('lover')">💕 恋人</button>
@@ -290,6 +293,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
       <button class="action-btn btn-secondary" onclick="goBack()">🔄 再测一对</button>
       <button class="action-btn btn-primary" onclick="showShare()">📸 保存分享卡片</button>
     </div>
+    <button class="invite-btn" id="unlockBtn" style="margin-top:10px;font-size:14px;padding:13px;background:linear-gradient(135deg,rgba(231,76,60,.8),rgba(243,156,18,.8))" onclick="copyUnlockLink()">🔗 发给TA，等TA来解锁完整报告</button>
     <button class="invite-btn" onclick="showInviteCard()">📸 生成邀请卡，让TA也来测</button>
     <div class="footer" style="margin-top:24px">纯属娱乐 · 认真你就输了<br><span style="font-size:10px">made with 💜 by lince · 周五晚上不加班能干啥</span></div>
   </div>
@@ -971,6 +975,10 @@ function doMatch(overrideRl){
   document.getElementById("verdict").innerHTML=`${v.icon} ${v.text}`;
   document.getElementById("verdict").style.color=v.color;
   document.getElementById("tagline").textContent=genTagline(ta,tb,r.score,rl);
+  // beat-line: 用score算百分位
+  const beatPct=Math.min(99,Math.max(1,Math.round(r.score*0.85+Math.random()*8)));
+  const rlWord=rl==="colleague"?"搭档":rl==="friend"?"搭子":rl==="family"?"家人":"CP";
+  document.getElementById("beatLine").innerHTML=`⚡ 你俩击败了 <span class="beat-num" style="color:${v.color}">${beatPct}%</span> 的${rlWord}`;
 
   // build cards
   const el=document.getElementById("analysisCards");let h="";
@@ -1038,6 +1046,8 @@ function showShare(){
 
     const card=document.getElementById("shareCard");
     const rm=REL_META[rl||"lover"];
+    const rlWord=rl==="colleague"?"搭档":rl==="friend"?"搭子":rl==="family"?"家人":"CP";
+    const beatPct=Math.min(99,Math.max(1,Math.round(r.score*0.85+Math.random()*8)));
     let ch=`<div class="sc-brand">— SBTI配对 · 从夯到拉 —</div>`;
     // === 大号横排头部 ===
     ch+=`<div class="sc-hero">`;
@@ -1046,47 +1056,29 @@ function showShare(){
     ch+=`<div class="sc-hero-side"><div class="sc-hero-emoji sc-hero-emoji-b">${tb.emoji}</div><div class="sc-hero-code">${tb.code}</div><div class="sc-hero-name">${tb.name}</div></div>`;
     ch+=`</div>`;
     ch+=`<div class="sc-hero-verdict" style="color:${v.color}">${v.icon} ${v.text}</div>`;
+    // 击败百分比
+    ch+=`<div style="text-align:center;font-size:12px;color:#9898b8;margin:6px 0 2px">⚡ 击败了 <span style="color:${v.color};font-weight:800;font-size:14px">${beatPct}%</span> 的${rlWord}</div>`;
 
     // tags
     ch+=`<div class="sc-tags">`;
     kws.forEach(k=>{ch+=`<span class="sc-tag">${k.t}</span>`});
     ch+=`</div>`;
 
-    // relationship type (keep but trim desc)
-    ch+=`<div class="sc-section">`;
+    // 关系类型（只露标题不露描述）
+    ch+=`<div class="sc-section" style="text-align:center;padding:12px">`;
     ch+=`<div class="sc-rel-type" style="color:${v.color}">「${rel.type}」</div>`;
-    const descShort=rel.desc.length>100?rel.desc.substring(0,100)+"…":rel.desc;
-    ch+=`<div class="sc-rel-desc">${hlText(descShort)}</div>`;
+    ch+=`<div style="font-size:9px;color:#9898b8;margin-top:4px">完整报告已生成，扫码查看 👇</div>`;
     ch+=`</div>`;
 
-    // scenes (grid layout: 2x2 + 1, more compact and visual)
-    ch+=`<div class="sc-section"><div class="sc-section-title">🎬 ${rl==="colleague"?"职场名场面":rl==="friend"?"友谊名场面":rl==="family"?"家庭名场面":"真实场景预测"}</div>`;
+    // 悬念预览条——只露场景名和等级，不露内容
+    ch+=`<div class="sc-section"><div class="sc-section-title">🎬 报告抢先看</div>`;
     ch+=`<div class="sc-scene-grid">`;
     scenes.forEach(sc=>{
       const lv=getLevelLabel(sc.score);
       ch+=`<div class="sc-scene-card"><span class="sc-si">${sc.icon}</span><span class="sc-sn">${sc.title}</span><span class="sc-ss" style="background:${lv.c}20;color:${lv.c}">${lv.t}</span></div>`;
     });
-    ch+=`</div></div>`;
-
-    // strengths (keep top 2 for card brevity) — with highlights
-    ch+=`<div class="sc-section"><div class="sc-section-title">💎 ${rl==="colleague"?"职场buff":rl==="friend"?"友谊buff":rl==="family"?"家庭buff":"你们的buff"}</div>`;
-    strengths.slice(0,2).forEach(s=>{
-      ch+=`<div class="sc-bullet"><span class="sc-bi">${s.icon}</span><span>${hlText(s.text)}</span></div>`;
-    });
     ch+=`</div>`;
-
-    // challenges (keep top 2) — with highlights
-    ch+=`<div class="sc-section"><div class="sc-section-title">💣 ${rl==="colleague"?"职场雷区":rl==="friend"?"友谊雷区":rl==="family"?"家庭雷区":"埋雷预警"}</div>`;
-    challenges.slice(0,2).forEach(s=>{
-      ch+=`<div class="sc-bullet"><span class="sc-bi">${s.icon}</span><span>${hlText(s.text)}</span></div>`;
-    });
-    ch+=`</div>`;
-
-    // advice (keep first only for card) — with highlights
-    ch+=`<div class="sc-section"><div class="sc-section-title">💡 ${rl==="colleague"?"摸鱼锦囊":rl==="friend"?"损友锦囊":rl==="family"?"过年锦囊":"灵魂处方"}</div>`;
-    advice.slice(0,1).forEach(t=>{
-      ch+=`<div class="sc-advice">${hlText("• "+t)}</div>`;
-    });
+    ch+=`<div style="text-align:center;font-size:9px;color:#7c5cff;margin-top:6px">💎 buff × ${strengths.length} &nbsp; 💣 雷区 × ${challenges.length} &nbsp; 💡 锦囊 × ${advice.length} &nbsp; 🔬 15维扫描</div>`;
     ch+=`</div>`;
 
     // QR code + CTA bottom
@@ -1212,22 +1204,49 @@ function showToast(msg){
   document.body.appendChild(d);setTimeout(()=>{d.style.opacity="0";d.style.transition="opacity .3s";setTimeout(()=>d.remove(),300)},2000);
 }
 
+function copyUnlockLink(){
+  if(!window._lastResult)return;
+  const{ta,tb,relType:rl}=window._lastResult;
+  const base=location.origin+location.pathname;
+  const url=`${base}?a=${encodeURIComponent(ta.code)}&b=${encodeURIComponent(tb.code)}&r=${rl}`;
+  const rlWord=rl==="colleague"?"同事":rl==="friend"?"朋友":rl==="family"?"亲人":"对象";
+  const shareText=`我测了我俩的SBTI配对，结果是…你自己来看吧 👀\n${url}`;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(shareText).then(()=>showToast("🔗 链接已复制！发给TA吧")).catch(()=>fallbackCopy(shareText));
+  }else{fallbackCopy(shareText)}
+}
+function fallbackCopy(text){
+  const ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;left:-9999px";
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand("copy");showToast("🔗 链接已复制！发给TA吧")}catch(e){showToast("复制失败，请手动复制链接")}
+  document.body.removeChild(ta);
+}
+
 renderGrid("gridA","A");renderGrid("gridB","B");
 
 // ============ URL PARAM PRE-FILL ============
 (function(){
   const params=new URLSearchParams(location.search);
-  const aCode=params.get("a"),relParam=params.get("r");
+  const aCode=params.get("a"),bCode=params.get("b"),relParam=params.get("r");
   if(aCode){
-    const idx=TYPES.findIndex(t=>t.code.toUpperCase()===aCode.toUpperCase());
-    if(idx>=0){
-      // A already chosen by sharer — lock it in as A, scroll to B
-      selectType("A",idx);
-      if(relParam&&REL_META[relParam])selectRel(relParam);
-      // show a hint
+    const idxA=TYPES.findIndex(t=>t.code.toUpperCase()===aCode.toUpperCase());
+    if(idxA>=0){
+      selectType("A",idxA);
+      if(relParam&&REL_META[relParam])selRel=relParam;
+      // 如果b也有，说明是"等TA解锁"链接，B选完直接出结果
+      if(bCode){
+        const idxB=TYPES.findIndex(t=>t.code.toUpperCase()===bCode.toUpperCase());
+        if(idxB>=0){
+          selectType("B",idxB);
+          // 直接触发配对
+          setTimeout(()=>doMatch(relParam||"lover"),300);
+          return;
+        }
+      }
+      // 只有a，显示邀请提示
       const hint=document.createElement("div");
       hint.className="prefill-hint";
-      hint.innerHTML=`<span class="ph-emoji">${TYPES[idx].emoji}</span> <strong>${TYPES[idx].code}</strong> 向你发起配对！选你的类型，看看是夯还是拉 👇`;
+      hint.innerHTML=`<span class="ph-emoji">${TYPES[idxA].emoji}</span> <strong>${TYPES[idxA].code}</strong> 向你发起配对！选你的类型，看看是夯还是拉 👇`;
       document.getElementById("panelA").insertAdjacentElement("afterend",hint);
       setTimeout(()=>document.getElementById("panelB").scrollIntoView({behavior:"smooth",block:"start"}),500);
     }
